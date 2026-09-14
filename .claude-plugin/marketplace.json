@@ -1,0 +1,40 @@
+{
+  "description": "Claude Code plugins from the Nextbridge developer ecosystem.",
+  "name": "nextbridge",
+  "owner": {
+    "name": "Nextbridge",
+    "url": "https://github.com/nextbridgehq"
+  },
+  "plugins": [
+    {
+      "author": {
+        "name": "Nextbridge",
+        "url": "https://github.com/nextbridgehq"
+      },
+      "description": "Claude Code plugin that applies skills across a whole folder or repository instead of one file at a time.",
+      "homepage": "https://github.com/nextbridgehq/code-comrades#readme",
+      "license": "MIT",
+      "name": "code-comrades",
+      "repository": "https://github.com/nextbridgehq/code-comrades",
+      "source": {
+        "repo": "nextbridgehq/code-comrades",
+        "source": "github"
+      }
+    },
+    {
+      "author": {
+        "name": "Nextbridge",
+        "url": "https://github.com/nextbridgehq"
+      },
+      "description": "Bridges a Graphify knowledge graph into agent development workflows: blast radius, context packs, drift, and graph-first debugging.",
+      "homepage": "https://github.com/nextbridgehq/graphpowers#readme",
+      "license": "MIT",
+      "name": "graphpowers",
+      "repository": "https://github.com/nextbridgehq/graphpowers",
+      "source": {
+        "repo": "nextbridgehq/graphpowers",
+        "source": "github"
+      }
+    }
+  ]
+}

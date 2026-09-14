@@ -1,0 +1,74 @@
+schema: nextbridge.dev/product/v1
+
+id: package-pilot
+name: Package Pilot
+
+description:
+  short: >-
+    Desktop app for testing a Node package locally before publishing it, without
+    hand-rolling the plumbing.
+  long: >-
+    Scans your projects for packages, links one into another by whichever
+    strategy fits - npm link, yalc, npm pack, a file: workspace reference, or a
+    straight copy - and creates throwaway sandboxes for testing CLI packages. It
+    can run a local Verdaccio registry so a publish-install cycle never touches
+    npmjs.org, audits lifecycle scripts and dependencies, draws the dependency
+    topology with cycle detection, watches sources and rebuilds on change, and
+    keeps PTY terminal sessions alongside all of it.
+
+problem: >-
+  Testing a package before you publish it means npm link, a sandbox, a rebuild
+  loop, and a local registry, each set up by hand and each failing in its own
+  way, so the fastest path becomes publishing a broken version to find out.
+
+user:
+  - package-maintainer
+  - javascript-developer
+
+capabilities:
+  core:
+    - package-linking
+    - sandbox-creation
+    - local-registry-hosting
+    - dependency-visualization
+  secondary:
+    - lifecycle-script-inspection
+    - vulnerability-audit
+
+interfaces:
+  - type: desktop-app
+    platforms:
+      - linux
+      - macos
+      - windows
+    summary: >-
+      A Tauri v2 application - React and Fluent UI in front, Rust behind -
+      bundled per platform. There is no CLI and no importable library.
+
+# Not distributed on npm: package.json is "private": true and exists to build
+# the app, not to publish it. Bundles are produced per platform by the release
+# workflow, which builds on macOS, Linux, and Windows.
+distribution:
+  - channel: desktop-binaries
+    platforms:
+      - linux
+      - macos
+      - windows
+    via: GitHub Releases
+  - channel: github
+    repository: nextbridgehq/package-pilot
+
+runtime:
+  language: mixed
+  os:
+    - linux
+    - macos
+    - windows
+
+license: MIT
+
+maturity: stable
+
+plugins: []
+
+integrations: []

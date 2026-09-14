@@ -1,0 +1,72 @@
+schema: nextbridge.dev/product/v1
+
+id: code-comrades
+name: Code Comrades
+
+description:
+  short: >-
+    Claude Code plugin that applies skills across a whole folder or repository
+    instead of one file at a time.
+  long: >-
+    Two execution models under one plugin. Batch skills discover the files that
+    match a task, dispatch a scoped worker per file, save progress after every
+    chunk so an interrupted run resumes, and report a summary. Project skills
+    take one deterministic pass over the repository's facts and produce a single
+    artifact, such as a README or a set of changelog fragments. Runs can be
+    scoped to what git says changed, chained into pipelines, and gated behind a
+    verification command that reverts a file on regression.
+
+problem: >-
+  A coding agent handles one file well and a whole codebase badly: applying the
+  same change across two hundred files means babysitting two hundred requests,
+  with no scoping, no resumption, and no record of what was done.
+
+user:
+  - developer-using-ai-agent
+  - repository-maintainer
+
+capabilities:
+  core:
+    - batch-file-processing
+    - code-annotation
+    - code-generation
+    - artifact-generation
+    - repository-fact-extraction
+  secondary:
+    - file-discovery
+    - git-scoping
+
+# Empty by design. The product's only user-facing surface is its Claude Code
+# plugin, which is declared once in plugins[] and never mirrored here (rule
+# R-REF9 keeps "no surface at all" an error).
+interfaces: []
+
+distribution:
+  - channel: github
+    repository: nextbridgehq/code-comrades
+
+runtime:
+  language: python
+  python: ">=3.9"
+  host:
+    name: Claude Code
+
+license: MIT
+
+maturity: stable
+
+plugins:
+  - name: code-comrades
+    host: claude-code
+    path: .
+    manifest: .claude-plugin/plugin.json
+    marketplace: nextbridge
+    components:
+      skills: 10
+      agents: 1
+      commands: 0
+      hooks: false
+      mcp: false
+    status: published
+
+integrations: []

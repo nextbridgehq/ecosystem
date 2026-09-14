@@ -1,0 +1,1424 @@
+{
+  "_generated": {
+    "by": "scripts/compile.mjs",
+    "inputs": [
+      "registry.yaml",
+      "taxonomy/capabilities.yaml",
+      "manifests/*.yaml"
+    ],
+    "warning": "Generated file. Do not edit by hand - run `node scripts/compile.mjs`."
+  },
+  "capabilities": {
+    "agent-process-guidance": {
+      "category": "agent-governance",
+      "name": "Agent Process Guidance",
+      "note": "Advisory only. See permission-enforcement.",
+      "products": [
+        "graphpowers",
+        "project-charter"
+      ]
+    },
+    "architecture-drift-detection": {
+      "category": "codebase-intelligence",
+      "name": "Architecture Drift Detection",
+      "products": [
+        "graphpowers"
+      ]
+    },
+    "artifact-generation": {
+      "category": "code-transformation",
+      "name": "Artifact Generation",
+      "products": [
+        "code-comrades",
+        "project-charter"
+      ]
+    },
+    "batch-file-processing": {
+      "category": "code-transformation",
+      "name": "Batch File Processing",
+      "products": [
+        "code-comrades"
+      ]
+    },
+    "cache-stable-output": {
+      "category": "codebase-intelligence",
+      "name": "Cache-stable Output",
+      "products": [
+        "repocode"
+      ]
+    },
+    "call-budget-enforcement": {
+      "category": "agent-runtime-safety",
+      "name": "Call Budget Enforcement",
+      "products": [
+        "agent-loop-guard"
+      ]
+    },
+    "capability-auditing": {
+      "category": "agent-governance",
+      "name": "Capability Auditing",
+      "products": [
+        "project-charter"
+      ]
+    },
+    "ci-gate": {
+      "category": "cross-cutting",
+      "name": "CI Gate",
+      "note": "Fail a pipeline on a computed threshold. Shared across several products.",
+      "products": [
+        "edge-compat-check",
+        "project-charter",
+        "registry-guard",
+        "repocode"
+      ]
+    },
+    "cms-admin-ui-extension": {
+      "category": "content-modelling",
+      "name": "CMS Admin UI Extension",
+      "products": [
+        "block-builder"
+      ]
+    },
+    "code-annotation": {
+      "category": "code-transformation",
+      "name": "Code Annotation",
+      "products": [
+        "code-comrades"
+      ]
+    },
+    "code-generation": {
+      "category": "code-transformation",
+      "name": "Code Generation",
+      "note": "Genuinely shared: test stubs and docs in one product, Payload block config emitted from stored schemas in another.",
+      "products": [
+        "block-builder",
+        "code-comrades"
+      ]
+    },
+    "content-compression": {
+      "category": "codebase-intelligence",
+      "name": "Content Compression",
+      "note": "Reducing a file's size while preserving its useful structure, in order to fit a budget. Distinct from dropping the file.",
+      "products": [
+        "repocode"
+      ]
+    },
+    "context-selection": {
+      "category": "codebase-intelligence",
+      "name": "Context Selection",
+      "note": "Choosing and ordering which parts of a repository are relevant to a task. Includes the ranking that drives the choice; ranking-explanation covers making that choice inspectable, which is a separate user-facing capability.",
+      "products": [
+        "graphpowers",
+        "repocode"
+      ]
+    },
+    "dependency-visualization": {
+      "category": "package-development",
+      "name": "Dependency Visualization",
+      "products": [
+        "package-pilot"
+      ]
+    },
+    "file-discovery": {
+      "category": "codebase-intelligence",
+      "name": "File Discovery",
+      "note": "Walking a tree while honouring ignore rules. Genuinely shared.",
+      "products": [
+        "code-comrades",
+        "edge-compat-check",
+        "repocode"
+      ]
+    },
+    "git-scoping": {
+      "category": "cross-cutting",
+      "name": "Git Scoping",
+      "products": [
+        "code-comrades",
+        "graphpowers",
+        "repocode"
+      ]
+    },
+    "graph-impact-analysis": {
+      "category": "codebase-intelligence",
+      "name": "Graph Impact Analysis",
+      "note": "Computes blast radius and reachability over a pre-built external graph. Merging this with import-graph-analysis would erase a real product boundary between building a graph and reasoning over one.",
+      "products": [
+        "graphpowers"
+      ]
+    },
+    "human-approval-gating": {
+      "category": "agent-governance",
+      "name": "Human Approval Gating",
+      "products": [
+        "project-charter"
+      ]
+    },
+    "import-graph-analysis": {
+      "category": "codebase-intelligence",
+      "name": "Import Graph Analysis",
+      "note": "Builds the dependency graph itself by parsing source. Deliberately not merged with graph-impact-analysis, which consumes a graph built elsewhere.",
+      "products": [
+        "repocode"
+      ]
+    },
+    "lifecycle-script-inspection": {
+      "category": "dependency-risk",
+      "name": "Lifecycle Script Inspection",
+      "note": "Shared subject, different source: registry metadata before install versus a local package.json before linking.",
+      "products": [
+        "package-pilot",
+        "registry-guard"
+      ]
+    },
+    "local-registry-hosting": {
+      "category": "package-development",
+      "name": "Local Registry Hosting",
+      "products": [
+        "package-pilot"
+      ]
+    },
+    "loop-detection": {
+      "category": "agent-runtime-safety",
+      "name": "Loop Detection",
+      "products": [
+        "agent-loop-guard"
+      ]
+    },
+    "multi-tenancy": {
+      "category": "content-modelling",
+      "name": "Multi-tenancy",
+      "products": [
+        "block-builder"
+      ]
+    },
+    "package-linking": {
+      "category": "package-development",
+      "name": "Package Linking",
+      "products": [
+        "package-pilot"
+      ]
+    },
+    "package-verification": {
+      "category": "dependency-risk",
+      "name": "Package Verification",
+      "note": "Evaluates a package you have not installed, from registry metadata. Deliberately not merged with vulnerability-audit.",
+      "products": [
+        "registry-guard"
+      ]
+    },
+    "permission-enforcement": {
+      "category": "agent-governance",
+      "name": "Permission Enforcement",
+      "note": "Blocks a disallowed action. Deliberately not merged with agent-process-guidance, which only advises.",
+      "products": [
+        "project-charter"
+      ]
+    },
+    "ranking-explanation": {
+      "category": "codebase-intelligence",
+      "name": "Ranking Explanation",
+      "products": [
+        "repocode"
+      ]
+    },
+    "remote-repository-fetch": {
+      "category": "codebase-intelligence",
+      "name": "Remote Repository Fetch",
+      "products": [
+        "repocode"
+      ]
+    },
+    "repository-fact-extraction": {
+      "category": "codebase-intelligence",
+      "name": "Repository Fact Extraction",
+      "products": [
+        "code-comrades"
+      ]
+    },
+    "runtime-compatibility-checking": {
+      "category": "dependency-risk",
+      "name": "Runtime Compatibility Checking",
+      "products": [
+        "edge-compat-check"
+      ]
+    },
+    "sandbox-creation": {
+      "category": "package-development",
+      "name": "Sandbox Creation",
+      "products": [
+        "package-pilot"
+      ]
+    },
+    "schema-import-export": {
+      "category": "content-modelling",
+      "name": "Schema Import and Export",
+      "products": [
+        "block-builder"
+      ]
+    },
+    "schema-persistence": {
+      "category": "content-modelling",
+      "name": "Schema Persistence",
+      "note": "Storing content-structure definitions outside application code, so they change without a deployment.",
+      "products": [
+        "block-builder"
+      ]
+    },
+    "schema-validation": {
+      "category": "content-modelling",
+      "name": "Schema Validation",
+      "note": "Scoped to content schemas. Not the same as validating an ecosystem artifact or a knowledge graph; those are unrelated schemas and must not be merged onto this leaf.",
+      "products": [
+        "block-builder"
+      ]
+    },
+    "schema-versioning": {
+      "category": "content-modelling",
+      "name": "Schema Versioning",
+      "products": [
+        "block-builder"
+      ]
+    },
+    "secret-scanning": {
+      "category": "cross-cutting",
+      "name": "Secret Scanning",
+      "products": [
+        "repocode"
+      ]
+    },
+    "semantic-search": {
+      "category": "cross-cutting",
+      "name": "Semantic Search",
+      "products": [
+        "repocode"
+      ]
+    },
+    "token-budgeting": {
+      "category": "codebase-intelligence",
+      "name": "Token Budgeting",
+      "products": [
+        "graphpowers",
+        "repocode"
+      ]
+    },
+    "typosquat-detection": {
+      "category": "dependency-risk",
+      "name": "Typosquat Detection",
+      "products": [
+        "registry-guard"
+      ]
+    },
+    "visual-schema-design": {
+      "category": "content-modelling",
+      "name": "Visual Schema Design",
+      "products": [
+        "block-builder"
+      ]
+    },
+    "vulnerability-audit": {
+      "category": "dependency-risk",
+      "name": "Vulnerability Audit",
+      "note": "Reports known advisories against an installed tree. See package-verification for the pre-install case.",
+      "products": [
+        "package-pilot"
+      ]
+    },
+    "workflow-state-management": {
+      "category": "agent-governance",
+      "name": "Workflow State Management",
+      "products": [
+        "project-charter"
+      ]
+    }
+  },
+  "categories": {
+    "agent-governance": {
+      "capabilities": [
+        "agent-process-guidance",
+        "capability-auditing",
+        "human-approval-gating",
+        "permission-enforcement",
+        "workflow-state-management"
+      ],
+      "description": "Shaping or constraining what an AI agent is allowed to do.",
+      "name": "Agent Governance"
+    },
+    "agent-runtime-safety": {
+      "capabilities": [
+        "call-budget-enforcement",
+        "loop-detection"
+      ],
+      "description": "Detecting and bounding agent behaviour at tool-call level.",
+      "name": "Agent Runtime Safety"
+    },
+    "code-transformation": {
+      "capabilities": [
+        "artifact-generation",
+        "batch-file-processing",
+        "code-annotation",
+        "code-generation"
+      ],
+      "description": "Producing or changing source files and repository artifacts.",
+      "name": "Code Transformation"
+    },
+    "codebase-intelligence": {
+      "capabilities": [
+        "architecture-drift-detection",
+        "cache-stable-output",
+        "content-compression",
+        "context-selection",
+        "file-discovery",
+        "graph-impact-analysis",
+        "import-graph-analysis",
+        "ranking-explanation",
+        "remote-repository-fetch",
+        "repository-fact-extraction",
+        "token-budgeting"
+      ],
+      "description": "Understanding what is in a repository and what depends on what.",
+      "name": "Codebase Intelligence"
+    },
+    "content-modelling": {
+      "capabilities": [
+        "cms-admin-ui-extension",
+        "multi-tenancy",
+        "schema-import-export",
+        "schema-persistence",
+        "schema-validation",
+        "schema-versioning",
+        "visual-schema-design"
+      ],
+      "description": "Defining and versioning content structures in a CMS.",
+      "name": "Content Modelling"
+    },
+    "cross-cutting": {
+      "capabilities": [
+        "ci-gate",
+        "git-scoping",
+        "secret-scanning",
+        "semantic-search"
+      ],
+      "description": "Capabilities that recur across categories and belong to no single one.",
+      "name": "Cross-cutting"
+    },
+    "dependency-risk": {
+      "capabilities": [
+        "lifecycle-script-inspection",
+        "package-verification",
+        "runtime-compatibility-checking",
+        "typosquat-detection",
+        "vulnerability-audit"
+      ],
+      "description": "Deciding whether depending on a package is safe and whether it will run.",
+      "name": "Dependency Risk"
+    },
+    "package-development": {
+      "capabilities": [
+        "dependency-visualization",
+        "local-registry-hosting",
+        "package-linking",
+        "sandbox-creation"
+      ],
+      "description": "Authoring, linking, and locally testing a package before release.",
+      "name": "Package Development"
+    }
+  },
+  "families": {
+    "agent-development-environment": {
+      "audience": "Developers using an AI coding agent on an existing repository.",
+      "name": "Agent Development Environment",
+      "products": [
+        "code-comrades",
+        "graphpowers",
+        "project-charter",
+        "repocode"
+      ]
+    },
+    "agent-runtime-safety": {
+      "audience": "Developers building AI agents.",
+      "name": "Agent Runtime Safety",
+      "products": [
+        "agent-loop-guard"
+      ]
+    },
+    "content-management": {
+      "audience": "Teams building on Payload CMS.",
+      "name": "Content Management",
+      "products": [
+        "block-builder"
+      ]
+    },
+    "dependency-risk": {
+      "audience": "Any JavaScript or TypeScript developer adding a dependency.",
+      "name": "Dependency Risk",
+      "products": [
+        "edge-compat-check",
+        "registry-guard"
+      ]
+    },
+    "package-development-workflow": {
+      "audience": "Node.js package authors testing a library before release.",
+      "name": "Package Development Workflow",
+      "products": [
+        "package-pilot"
+      ]
+    }
+  },
+  "integrations": [],
+  "marketplace": {
+    "description": "Claude Code plugins from the Nextbridge developer ecosystem.",
+    "id": "nextbridge",
+    "members": [
+      {
+        "plugin": "code-comrades",
+        "product": "code-comrades"
+      },
+      {
+        "plugin": "graphpowers",
+        "product": "graphpowers"
+      }
+    ],
+    "name": "Nextbridge",
+    "owner": {
+      "name": "Nextbridge",
+      "url": "https://github.com/nextbridgehq"
+    }
+  },
+  "products": [
+    {
+      "capabilities": {
+        "core": [
+          {
+            "category": "agent-runtime-safety",
+            "id": "loop-detection",
+            "name": "Loop Detection"
+          },
+          {
+            "category": "agent-runtime-safety",
+            "id": "call-budget-enforcement",
+            "name": "Call Budget Enforcement"
+          }
+        ],
+        "secondary": []
+      },
+      "described": true,
+      "description": {
+        "long": "Wraps an existing tool-execution loop and decides, before each call, whether to allow it. It detects repeated calls, non-consecutive repeats inside a sliding window, repeated identical failures, stagnant results, and cycles between sequences of calls, and it enforces a total call budget, per-tool budgets, and a wall-clock ceiling. Every blocked decision carries a code, a suggested action, and a sentence the agent can be given directly. State serializes, so a run survives a process restart.",
+        "short": "Decision layer that catches an agent looping on the same tool call and says what to do about it."
+      },
+      "distribution": [
+        {
+          "access": "public",
+          "channel": "npm",
+          "packages": [
+            "agent-loop-guard"
+          ]
+        },
+        {
+          "channel": "github",
+          "repository": "nextbridgehq/agent-loop-guard"
+        }
+      ],
+      "family": "agent-runtime-safety",
+      "id": "agent-loop-guard",
+      "integrations": [],
+      "interfaces": [
+        {
+          "language": "javascript",
+          "package": "agent-loop-guard",
+          "summary": "Exports LoopGuard plus the signature helpers (callSignature, stableStringify, hashSignature). ESM only, no runtime dependencies, with hand-written .d.ts types checked against a consumer fixture under strict NodeNext.",
+          "type": "library"
+        }
+      ],
+      "license": "MIT",
+      "maturity": "stable",
+      "name": "Agent Loop Guard",
+      "plugins": [],
+      "problem": "A hard iteration limit stops a runaway agent from spending money but explains nothing: not which call looped, not whether results stopped changing, and not what the agent should do instead.",
+      "repository": "nextbridgehq/agent-loop-guard",
+      "repository_url": "https://github.com/nextbridgehq/agent-loop-guard",
+      "runtime": {
+        "language": "javascript",
+        "node": ">=18"
+      },
+      "user": [
+        "ai-agent-developer"
+      ]
+    },
+    {
+      "capabilities": {
+        "core": [
+          {
+            "category": "content-modelling",
+            "id": "visual-schema-design",
+            "name": "Visual Schema Design"
+          },
+          {
+            "category": "content-modelling",
+            "id": "schema-persistence",
+            "name": "Schema Persistence"
+          },
+          {
+            "category": "content-modelling",
+            "id": "schema-versioning",
+            "name": "Schema Versioning"
+          },
+          {
+            "category": "code-transformation",
+            "id": "code-generation",
+            "name": "Code Generation"
+          }
+        ],
+        "secondary": [
+          {
+            "category": "content-modelling",
+            "id": "schema-validation",
+            "name": "Schema Validation"
+          },
+          {
+            "category": "content-modelling",
+            "id": "schema-import-export",
+            "name": "Schema Import and Export"
+          },
+          {
+            "category": "content-modelling",
+            "id": "cms-admin-ui-extension",
+            "name": "CMS Admin UI Extension"
+          },
+          {
+            "category": "content-modelling",
+            "id": "multi-tenancy",
+            "name": "Multi-tenancy"
+          }
+        ]
+      },
+      "described": true,
+      "description": {
+        "long": "Editors design content blocks in a drag-and-drop canvas, publish them, and use them across any collection without a developer, a code change, or a deployment. Block definitions live in the database with immutable, restorable version snapshots, and can be exported to and imported from JSON or emitted as Payload config.",
+        "short": "Visual block builder for Payload CMS v3 that stores block schemas in the database instead of in code."
+      },
+      "distribution": [
+        {
+          "access": "public",
+          "channel": "npm",
+          "packages": [
+            "@nextbridgehq/payload-block-builder"
+          ]
+        },
+        {
+          "channel": "github",
+          "repository": "nextbridgehq/block-builder"
+        }
+      ],
+      "family": "content-management",
+      "id": "block-builder",
+      "integrations": [],
+      "interfaces": [
+        {
+          "language": "typescript",
+          "package": "@nextbridgehq/payload-block-builder",
+          "summary": "Exports the Payload plugin, the DB Layout collection field, both collections, and six admin React components under the ./client entry point.",
+          "type": "library"
+        },
+        {
+          "command": "payload-block-builder",
+          "package": "@nextbridgehq/payload-block-builder",
+          "summary": "A single init command that scaffolds the builder page and layout, injects the admin field styles, and adds the plugin to payload.config.ts.",
+          "type": "cli"
+        },
+        {
+          "host": "Payload CMS v3",
+          "routes": [
+            "POST /block-builder/generate",
+            "GET /block-builder/load/:slug",
+            "POST /blocks/save",
+            "GET /block-builder/versions/:slug"
+          ],
+          "summary": "Handlers appended to the host application's config.endpoints, not a standalone server. They require an X-Block-Builder header.",
+          "type": "http-endpoints"
+        }
+      ],
+      "license": "MIT",
+      "maturity": "stable",
+      "name": "Payload Block Builder",
+      "plugins": [],
+      "problem": "Every new block type or layout change in a Payload project requires a developer to edit code, redeploy, and migrate, which turns routine content work into engineering tickets.",
+      "repository": "nextbridgehq/block-builder",
+      "repository_url": "https://github.com/nextbridgehq/block-builder",
+      "runtime": {
+        "host": {
+          "name": "Payload CMS v3",
+          "requires": [
+            "payload >=3.0.0",
+            "@payloadcms/ui >=3.0.0",
+            "next >=14.0.0",
+            "react >=18.0.0"
+          ]
+        },
+        "language": "typescript",
+        "os": [
+          "linux",
+          "macos",
+          "windows"
+        ]
+      },
+      "user": [
+        "cms-developer",
+        "content-editor"
+      ]
+    },
+    {
+      "capabilities": {
+        "core": [
+          {
+            "category": "code-transformation",
+            "id": "batch-file-processing",
+            "name": "Batch File Processing"
+          },
+          {
+            "category": "code-transformation",
+            "id": "code-annotation",
+            "name": "Code Annotation"
+          },
+          {
+            "category": "code-transformation",
+            "id": "code-generation",
+            "name": "Code Generation"
+          },
+          {
+            "category": "code-transformation",
+            "id": "artifact-generation",
+            "name": "Artifact Generation"
+          },
+          {
+            "category": "codebase-intelligence",
+            "id": "repository-fact-extraction",
+            "name": "Repository Fact Extraction"
+          }
+        ],
+        "secondary": [
+          {
+            "category": "codebase-intelligence",
+            "id": "file-discovery",
+            "name": "File Discovery"
+          },
+          {
+            "category": "cross-cutting",
+            "id": "git-scoping",
+            "name": "Git Scoping"
+          }
+        ]
+      },
+      "described": true,
+      "description": {
+        "long": "Two execution models under one plugin. Batch skills discover the files that match a task, dispatch a scoped worker per file, save progress after every chunk so an interrupted run resumes, and report a summary. Project skills take one deterministic pass over the repository's facts and produce a single artifact, such as a README or a set of changelog fragments. Runs can be scoped to what git says changed, chained into pipelines, and gated behind a verification command that reverts a file on regression.",
+        "short": "Claude Code plugin that applies skills across a whole folder or repository instead of one file at a time."
+      },
+      "distribution": [
+        {
+          "channel": "github",
+          "repository": "nextbridgehq/code-comrades"
+        },
+        {
+          "channel": "claude-code-marketplace",
+          "marketplace": "nextbridge",
+          "plugins": [
+            "code-comrades"
+          ]
+        }
+      ],
+      "family": "agent-development-environment",
+      "id": "code-comrades",
+      "integrations": [],
+      "interfaces": [],
+      "license": "MIT",
+      "maturity": "stable",
+      "name": "Code Comrades",
+      "plugins": [
+        {
+          "components": {
+            "agents": 1,
+            "commands": 0,
+            "hooks": false,
+            "mcp": false,
+            "skills": 10
+          },
+          "host": "claude-code",
+          "manifest": ".claude-plugin/plugin.json",
+          "marketplace": "nextbridge",
+          "name": "code-comrades",
+          "path": ".",
+          "status": "published"
+        }
+      ],
+      "problem": "A coding agent handles one file well and a whole codebase badly: applying the same change across two hundred files means babysitting two hundred requests, with no scoping, no resumption, and no record of what was done.",
+      "repository": "nextbridgehq/code-comrades",
+      "repository_url": "https://github.com/nextbridgehq/code-comrades",
+      "runtime": {
+        "host": {
+          "name": "Claude Code"
+        },
+        "language": "python",
+        "python": ">=3.9"
+      },
+      "user": [
+        "developer-using-ai-agent",
+        "repository-maintainer"
+      ]
+    },
+    {
+      "capabilities": {
+        "core": [
+          {
+            "category": "dependency-risk",
+            "id": "runtime-compatibility-checking",
+            "name": "Runtime Compatibility Checking"
+          }
+        ],
+        "secondary": [
+          {
+            "category": "cross-cutting",
+            "id": "ci-gate",
+            "name": "CI Gate"
+          },
+          {
+            "category": "codebase-intelligence",
+            "id": "file-discovery",
+            "name": "File Discovery"
+          }
+        ]
+      },
+      "described": true,
+      "description": {
+        "long": "Static analysis over your dependencies' shipped source, matched against a profile per target runtime - Vercel Edge, Cloudflare Workers, Netlify Edge, Fastly Compute, or a strict union. It reads npm, pnpm, and Yarn Classic lockfiles for the transitive tree, ignores type-only imports so they do not produce false findings, bounds each scan by file size and file count, and emits stable, diff-friendly output with a non-zero exit for CI.",
+        "short": "Scans a dependency tree for Node APIs that do not exist on edge runtimes, before the deploy fails."
+      },
+      "distribution": [
+        {
+          "access": "public",
+          "channel": "npm",
+          "packages": [
+            "edge-compat-check"
+          ]
+        },
+        {
+          "channel": "github",
+          "repository": "nextbridgehq/edge-compat-check"
+        }
+      ],
+      "family": "dependency-risk",
+      "id": "edge-compat-check",
+      "integrations": [],
+      "interfaces": [
+        {
+          "command": "edge-compat-check",
+          "package": "edge-compat-check",
+          "summary": "Scans the current project against a target profile, with --ci for a non-zero exit, --json for machine-readable output, --ignore to suppress specific core modules, and --include-dev.",
+          "type": "cli"
+        },
+        {
+          "language": "javascript",
+          "package": "edge-compat-check",
+          "summary": "The same scan programmatically, with bundled .d.ts declarations and no runtime dependencies.",
+          "type": "library"
+        }
+      ],
+      "license": "MIT",
+      "maturity": "experimental",
+      "name": "Edge Compat Check",
+      "plugins": [],
+      "problem": "A dependency that works locally on Node fails at the edge because it reaches for a core module the runtime does not have, and you find out from a failed deploy rather than from the dependency's own metadata.",
+      "repository": "nextbridgehq/edge-compat-check",
+      "repository_url": "https://github.com/nextbridgehq/edge-compat-check",
+      "runtime": {
+        "language": "javascript",
+        "node": ">=18"
+      },
+      "user": [
+        "javascript-developer",
+        "repository-maintainer"
+      ]
+    },
+    {
+      "capabilities": {
+        "core": [
+          {
+            "category": "codebase-intelligence",
+            "id": "graph-impact-analysis",
+            "name": "Graph Impact Analysis"
+          },
+          {
+            "category": "codebase-intelligence",
+            "id": "context-selection",
+            "name": "Context Selection"
+          },
+          {
+            "category": "codebase-intelligence",
+            "id": "token-budgeting",
+            "name": "Token Budgeting"
+          },
+          {
+            "category": "codebase-intelligence",
+            "id": "architecture-drift-detection",
+            "name": "Architecture Drift Detection"
+          },
+          {
+            "category": "agent-governance",
+            "id": "agent-process-guidance",
+            "name": "Agent Process Guidance"
+          }
+        ],
+        "secondary": [
+          {
+            "category": "cross-cutting",
+            "id": "git-scoping",
+            "name": "Git Scoping"
+          }
+        ]
+      },
+      "described": true,
+      "description": {
+        "long": "A zero-dependency Python bridge plus eleven Claude Code skills that make an existing code graph usable during real work. It computes the blast radius of a change by bidirectional traversal, renders token-budgeted context packs for subagents, answers reverse-dependency questions, diffs two graph snapshots to surface architecture drift, checks whether the graph is still current, and flags scope creep by comparing touched files against the planned set. It reads graph.json directly rather than importing the tool that produced it, so a schema change fails loudly instead of quietly misleading a plan.",
+        "short": "Bridges a Graphify knowledge graph into agent development workflows: blast radius, context packs, drift, and graph-first debugging."
+      },
+      "distribution": [
+        {
+          "channel": "github",
+          "repository": "nextbridgehq/graphpowers"
+        },
+        {
+          "channel": "gemini-cli-extension",
+          "repository": "nextbridgehq/graphpowers"
+        },
+        {
+          "channel": "claude-code-marketplace",
+          "marketplace": "nextbridge",
+          "plugins": [
+            "graphpowers"
+          ]
+        }
+      ],
+      "family": "agent-development-environment",
+      "id": "graphpowers",
+      "integrations": [
+        {
+          "contract": {
+            "consumes": "graphify-out/graph.json (networkx node-link, schema node-link-v1)"
+          },
+          "external": true,
+          "interface": "file",
+          "status": "supported",
+          "to": "graphify",
+          "type": "graph-consumer"
+        },
+        {
+          "external": true,
+          "interface": "plugin",
+          "status": "supported",
+          "to": "superpowers",
+          "type": "methodology-extension"
+        }
+      ],
+      "interfaces": [
+        {
+          "command": "graphpowers",
+          "summary": "Thirteen subcommands over an existing graph.json - freshness, blast, pack, drift, who-uses, upstream-check, snapshot, guard, narrate, parallel, explain, pack-feedback, doctor. Installed from the repository; the console script is declared in pyproject.toml but the package is not published.",
+          "type": "cli"
+        }
+      ],
+      "license": "MIT",
+      "maturity": "stable",
+      "name": "GraphPowers",
+      "plugins": [
+        {
+          "components": {
+            "agents": 0,
+            "commands": 0,
+            "hooks": true,
+            "mcp": false,
+            "skills": 11
+          },
+          "host": "claude-code",
+          "manifest": ".claude-plugin/plugin.json",
+          "marketplace": "nextbridge",
+          "name": "graphpowers",
+          "path": ".",
+          "status": "published"
+        }
+      ],
+      "problem": "A coding agent plans, debugs, and reviews from whatever files it happened to read, with no view of what a change actually reaches, so blast radius is guessed and architectural drift is noticed only after it ships.",
+      "repository": "nextbridgehq/graphpowers",
+      "repository_url": "https://github.com/nextbridgehq/graphpowers",
+      "runtime": {
+        "language": "python",
+        "python": ">=3.9"
+      },
+      "user": [
+        "ai-agent-developer",
+        "developer-using-ai-agent"
+      ]
+    },
+    {
+      "capabilities": {
+        "core": [
+          {
+            "category": "package-development",
+            "id": "package-linking",
+            "name": "Package Linking"
+          },
+          {
+            "category": "package-development",
+            "id": "sandbox-creation",
+            "name": "Sandbox Creation"
+          },
+          {
+            "category": "package-development",
+            "id": "local-registry-hosting",
+            "name": "Local Registry Hosting"
+          },
+          {
+            "category": "package-development",
+            "id": "dependency-visualization",
+            "name": "Dependency Visualization"
+          }
+        ],
+        "secondary": [
+          {
+            "category": "dependency-risk",
+            "id": "lifecycle-script-inspection",
+            "name": "Lifecycle Script Inspection"
+          },
+          {
+            "category": "dependency-risk",
+            "id": "vulnerability-audit",
+            "name": "Vulnerability Audit"
+          }
+        ]
+      },
+      "described": true,
+      "description": {
+        "long": "Scans your projects for packages, links one into another by whichever strategy fits - npm link, yalc, npm pack, a file: workspace reference, or a straight copy - and creates throwaway sandboxes for testing CLI packages. It can run a local Verdaccio registry so a publish-install cycle never touches npmjs.org, audits lifecycle scripts and dependencies, draws the dependency topology with cycle detection, watches sources and rebuilds on change, and keeps PTY terminal sessions alongside all of it.",
+        "short": "Desktop app for testing a Node package locally before publishing it, without hand-rolling the plumbing."
+      },
+      "distribution": [
+        {
+          "channel": "desktop-binaries",
+          "platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "via": "GitHub Releases"
+        },
+        {
+          "channel": "github",
+          "repository": "nextbridgehq/package-pilot"
+        }
+      ],
+      "family": "package-development-workflow",
+      "id": "package-pilot",
+      "integrations": [],
+      "interfaces": [
+        {
+          "platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "summary": "A Tauri v2 application - React and Fluent UI in front, Rust behind - bundled per platform. There is no CLI and no importable library.",
+          "type": "desktop-app"
+        }
+      ],
+      "license": "MIT",
+      "maturity": "stable",
+      "name": "Package Pilot",
+      "plugins": [],
+      "problem": "Testing a package before you publish it means npm link, a sandbox, a rebuild loop, and a local registry, each set up by hand and each failing in its own way, so the fastest path becomes publishing a broken version to find out.",
+      "repository": "nextbridgehq/package-pilot",
+      "repository_url": "https://github.com/nextbridgehq/package-pilot",
+      "runtime": {
+        "language": "mixed",
+        "os": [
+          "linux",
+          "macos",
+          "windows"
+        ]
+      },
+      "user": [
+        "package-maintainer",
+        "javascript-developer"
+      ]
+    },
+    {
+      "capabilities": {
+        "core": [
+          {
+            "category": "agent-governance",
+            "id": "permission-enforcement",
+            "name": "Permission Enforcement"
+          },
+          {
+            "category": "agent-governance",
+            "id": "workflow-state-management",
+            "name": "Workflow State Management"
+          },
+          {
+            "category": "agent-governance",
+            "id": "human-approval-gating",
+            "name": "Human Approval Gating"
+          },
+          {
+            "category": "agent-governance",
+            "id": "capability-auditing",
+            "name": "Capability Auditing"
+          },
+          {
+            "category": "agent-governance",
+            "id": "agent-process-guidance",
+            "name": "Agent Process Guidance"
+          }
+        ],
+        "secondary": [
+          {
+            "category": "cross-cutting",
+            "id": "ci-gate",
+            "name": "CI Gate"
+          },
+          {
+            "category": "code-transformation",
+            "id": "artifact-generation",
+            "name": "Artifact Generation"
+          }
+        ]
+      },
+      "described": true,
+      "description": {
+        "long": "Conventions are generated or imported into a charter, validated, and then enforced: the CLI fails a build on a violation, the pre-commit hook fails a commit, and the MCP server exposes the same checks to an agent while it works. A phased workflow tracks where a run is, records human approvals at the gates that require one, and audits the artifacts each phase was supposed to produce.",
+        "short": "Governance engine that turns a project's conventions into rules an AI agent is actually held to."
+      },
+      "distribution": [
+        {
+          "channel": "pypi",
+          "packages": [
+            "project-charter"
+          ]
+        },
+        {
+          "channel": "github",
+          "repository": "nextbridgehq/project-charter"
+        }
+      ],
+      "family": "agent-development-environment",
+      "id": "project-charter",
+      "integrations": [],
+      "interfaces": [
+        {
+          "command": "charter",
+          "package": "project-charter",
+          "summary": "Eight commands - init, run, status, approve, validate, enforce, audit, watch. `enforce --format=ci` is the gate; `watch` runs it continuously.",
+          "type": "cli"
+        },
+        {
+          "command": "charter-mcp",
+          "package": "project-charter",
+          "resources": [
+            "reference://git-protocol",
+            "reference://test-plan",
+            "reference://ci-bootstrap",
+            "template://conventions",
+            "template://test-plan"
+          ],
+          "summary": "Nine tools, five resources, and five prompts over the same engine the CLI uses. Requires the [mcp] extra.",
+          "tools": [
+            "get_phase_instructions",
+            "charter_status",
+            "audit_test_plan",
+            "validate_artifact",
+            "charter_workflow_start",
+            "charter_workflow_status",
+            "charter_workflow_approve",
+            "charter_workflow_advance",
+            "charter_dry_run"
+          ],
+          "transport": "stdio",
+          "type": "mcp"
+        },
+        {
+          "language": "python",
+          "package": "project-charter",
+          "summary": "The charter package - conventions, workflow state machine, and enforcement engine - importable directly. Provider extras are optional.",
+          "type": "library"
+        },
+        {
+          "id": "charter-enforce",
+          "summary": "Runs `charter enforce --format=ci` on every commit, with no filenames passed, so the whole charter is evaluated rather than the staged diff.",
+          "type": "pre-commit-hook"
+        }
+      ],
+      "license": "MIT",
+      "maturity": "stable",
+      "name": "Project Charter",
+      "plugins": [],
+      "problem": "An AI agent will agree to any convention you describe and then quietly ignore it three files later, because nothing in the loop checks the work against the rules or stops it when they are broken.",
+      "repository": "nextbridgehq/project-charter",
+      "repository_url": "https://github.com/nextbridgehq/project-charter",
+      "runtime": {
+        "language": "python",
+        "python": ">=3.11"
+      },
+      "user": [
+        "developer-using-ai-agent",
+        "engineering-lead",
+        "repository-maintainer"
+      ]
+    },
+    {
+      "capabilities": {
+        "core": [
+          {
+            "category": "dependency-risk",
+            "id": "package-verification",
+            "name": "Package Verification"
+          },
+          {
+            "category": "dependency-risk",
+            "id": "typosquat-detection",
+            "name": "Typosquat Detection"
+          },
+          {
+            "category": "dependency-risk",
+            "id": "lifecycle-script-inspection",
+            "name": "Lifecycle Script Inspection"
+          }
+        ],
+        "secondary": [
+          {
+            "category": "cross-cutting",
+            "id": "ci-gate",
+            "name": "CI Gate"
+          }
+        ]
+      },
+      "described": true,
+      "description": {
+        "long": "Given one or more package names, it validates the names, asks the registry whether they exist, and reports what it finds without installing anything: a name that does not exist and the popular package it is one edit away from, lifecycle scripts that would run on install, a package published in the last thirty days, a package with a single version, missing maintainer metadata, and deprecation. Results carry a risk level, and the CLI's exit code separates high risk from a registry it could not read.",
+        "short": "Checks an npm package against the registry before you install it, and says why it looks risky."
+      },
+      "distribution": [
+        {
+          "access": "public",
+          "channel": "npm",
+          "packages": [
+            "registry-guard"
+          ]
+        },
+        {
+          "channel": "github",
+          "repository": "nextbridgehq/registry-guard"
+        }
+      ],
+      "family": "dependency-risk",
+      "id": "registry-guard",
+      "integrations": [],
+      "interfaces": [
+        {
+          "command": "registry-guard",
+          "package": "registry-guard",
+          "summary": "Checks one or more names, with --json for structured output and a configurable registry, timeout, and concurrency. Exit codes separate high risk (1) from usage error (2) and unreadable registry analysis (3).",
+          "type": "cli"
+        },
+        {
+          "language": "javascript",
+          "package": "registry-guard",
+          "summary": "checkPackage() and checkPackages() return the same structured results the CLI prints. ESM, with bundled .d.ts declarations.",
+          "type": "library"
+        }
+      ],
+      "license": "MIT",
+      "maturity": "stable",
+      "name": "Registry Guard",
+      "plugins": [],
+      "problem": "An AI agent will confidently suggest a package name that does not exist, and the closest real name to it may be a typosquat with an install script, which you find out by running npm install.",
+      "repository": "nextbridgehq/registry-guard",
+      "repository_url": "https://github.com/nextbridgehq/registry-guard",
+      "runtime": {
+        "language": "javascript",
+        "node": ">=18"
+      },
+      "user": [
+        "javascript-developer",
+        "developer-using-ai-agent",
+        "package-maintainer"
+      ]
+    },
+    {
+      "capabilities": {
+        "core": [
+          {
+            "category": "codebase-intelligence",
+            "id": "context-selection",
+            "name": "Context Selection"
+          },
+          {
+            "category": "codebase-intelligence",
+            "id": "token-budgeting",
+            "name": "Token Budgeting"
+          },
+          {
+            "category": "codebase-intelligence",
+            "id": "content-compression",
+            "name": "Content Compression"
+          },
+          {
+            "category": "codebase-intelligence",
+            "id": "import-graph-analysis",
+            "name": "Import Graph Analysis"
+          }
+        ],
+        "secondary": [
+          {
+            "category": "codebase-intelligence",
+            "id": "file-discovery",
+            "name": "File Discovery"
+          },
+          {
+            "category": "cross-cutting",
+            "id": "git-scoping",
+            "name": "Git Scoping"
+          },
+          {
+            "category": "codebase-intelligence",
+            "id": "ranking-explanation",
+            "name": "Ranking Explanation"
+          },
+          {
+            "category": "codebase-intelligence",
+            "id": "cache-stable-output",
+            "name": "Cache-stable Output"
+          },
+          {
+            "category": "codebase-intelligence",
+            "id": "remote-repository-fetch",
+            "name": "Remote Repository Fetch"
+          },
+          {
+            "category": "cross-cutting",
+            "id": "secret-scanning",
+            "name": "Secret Scanning"
+          },
+          {
+            "category": "cross-cutting",
+            "id": "semantic-search",
+            "name": "Semantic Search"
+          },
+          {
+            "category": "cross-cutting",
+            "id": "ci-gate",
+            "name": "CI Gate"
+          }
+        ]
+      },
+      "described": true,
+      "description": {
+        "long": "Given a task, query, diff, or pull request plus a token budget, RepoCode discovers files, ranks them by structural importance, import centrality, recency, and query relevance, follows what they depend on, compresses lower-ranked files rather than truncating, and fits the highest-value selection into the budget. Ships as a CLI, an MCP server, an embeddable core library, and a GitHub Action.",
+        "short": "Builds the smallest useful codebase context for a task, for AI coding agents and LLMs."
+      },
+      "distribution": [
+        {
+          "access": "public",
+          "channel": "npm",
+          "packages": [
+            "repocode",
+            "@repocode/core",
+            "@repocode/mcp"
+          ]
+        },
+        {
+          "channel": "github",
+          "repository": "nextbridgehq/repocode"
+        }
+      ],
+      "family": "agent-development-environment",
+      "id": "repocode",
+      "integrations": [
+        {
+          "contract": {
+            "consumes": "repomix.config.json"
+          },
+          "external": true,
+          "interface": "file",
+          "status": "supported",
+          "to": "repomix",
+          "type": "config-import"
+        }
+      ],
+      "interfaces": [
+        {
+          "command": "repocode",
+          "package": "repocode",
+          "summary": "Primary entry point. Task queries, git and PR scoping, budgets, compression tiers, ranking explanation, and an interactive TUI.",
+          "type": "cli"
+        },
+        {
+          "args": [
+            "-y",
+            "-p",
+            "@repocode/mcp",
+            "repocode-mcp"
+          ],
+          "command": "npx",
+          "package": "@repocode/mcp",
+          "resources": [
+            "repocode:///{repoPath}/files",
+            "repocode:///{repoPath}/file/{filePath}"
+          ],
+          "summary": "Exposes context tools to MCP clients. Detected secrets are redacted automatically in this mode.",
+          "tools": [
+            "get_context",
+            "explain_selection",
+            "pack_repository",
+            "search_files",
+            "get_file_context",
+            "get_git_context",
+            "get_architecture"
+          ],
+          "transport": "stdio",
+          "type": "mcp"
+        },
+        {
+          "language": "typescript",
+          "package": "@repocode/core",
+          "summary": "The whole pipeline. The CLI and the MCP server both import it directly, without subprocesses.",
+          "type": "library"
+        },
+        {
+          "ref": "nextbridgehq/repocode",
+          "summary": "Fails a PR check when the diff plus its import-graph dependencies does not fit a token budget. Reports through job logs and the step summary.",
+          "type": "github-action"
+        }
+      ],
+      "license": "MIT",
+      "maturity": "stable",
+      "name": "RepoCode",
+      "plugins": [],
+      "problem": "Large repositories contain far more code than a model needs for any one task. Naive packing either truncates arbitrarily or spends the whole budget on code the task never touches.",
+      "repository": "nextbridgehq/repocode",
+      "repository_url": "https://github.com/nextbridgehq/repocode",
+      "runtime": {
+        "language": "typescript",
+        "node": ">=20",
+        "os": [
+          "linux",
+          "macos",
+          "windows"
+        ]
+      },
+      "user": [
+        "developer-using-ai-agent",
+        "ai-agent-developer"
+      ]
+    }
+  ],
+  "schema": "nextbridge.dev/catalog/v1",
+  "solutions": []
+}

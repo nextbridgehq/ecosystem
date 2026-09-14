@@ -1,0 +1,29 @@
+{
+  "name": "@nextbridgehq/ecosystem",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Nextbridge developer ecosystem: product manifest schema, capability taxonomy, registry, validation, and the generated catalog and canonical Claude Code marketplace.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nextbridgehq/ecosystem.git"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "validate": "node scripts/validate.mjs",
+    "validate:repos": "node scripts/validate.mjs --repos ..",
+    "compile": "node scripts/compile.mjs",
+    "check": "node scripts/validate.mjs && node scripts/compile.mjs --check",
+    "sync": "node scripts/sync.mjs",
+    "verify:clean-env": "node scripts/verify-clean-env.mjs",
+    "test": "node --test test/*.test.mjs",
+    "test:hardening": "node --test test/fixture.test.mjs test/lifecycle.test.mjs test/sync-lifecycle.test.mjs test/drift-repository.test.mjs test/drift-marketplace.test.mjs test/evolution-plugin.test.mjs test/evolution-taxonomy.test.mjs test/error-contract.test.mjs"
+  },
+  "devDependencies": {
+    "ajv": "^8.17.1",
+    "js-yaml": "^4.1.0"
+  }
+}

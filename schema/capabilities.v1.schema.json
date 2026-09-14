@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nextbridge.dev/schema/capabilities.v1.schema.json",
+  "title": "Nextbridge capability taxonomy v1",
+  "description": "Controlled vocabulary for capabilities. Two levels only: categories and capabilities. Derived from the Phase 0 audit, not invented ahead of it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "categories", "capabilities"],
+  "properties": {
+    "schema": { "const": "nextbridge.dev/taxonomy/v1" },
+    "categories": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "$ref": "#/$defs/slug" },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "$ref": "#/$defs/slug" },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "category"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "category": {
+            "$ref": "#/$defs/slug",
+            "description": "Required. Every capability belongs to exactly one category, so an orphan cannot drift in unnoticed."
+          },
+          "note": {
+            "type": "string",
+            "description": "Why this capability is distinct from a near neighbour. Present wherever a merge would erase a product boundary."
+          }
+        }
+      },
+      "description": "No products field. The product list per capability is computed by the compiler; storing it here would create a second source of truth."
+    }
+  },
+  "$defs": {
+    "slug": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" }
+  }
+}

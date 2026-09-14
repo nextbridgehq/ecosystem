@@ -1,0 +1,101 @@
+schema: nextbridge.dev/registry/v1
+
+# What the ecosystem knows about each product: where it lives, where it fits,
+# and whether it has described itself yet. This file never copies product
+# metadata - that lives in each product's own .nextbridge/product.yaml and is
+# merged into catalog.json at compile time.
+
+marketplace:
+  id: nextbridge
+  name: Nextbridge
+  description: >-
+    Claude Code plugins from the Nextbridge developer ecosystem.
+  owner:
+    name: Nextbridge
+    url: https://github.com/nextbridgehq
+  # Ordered membership of the one canonical Claude Code marketplace.
+  # Each entry is a pointer: {product, plugin}. Descriptive fields are resolved
+  # from the product manifest by the compiler, never stored here.
+  members:
+    - product: code-comrades
+      plugin: code-comrades
+    - product: graphpowers
+      plugin: graphpowers
+
+# All nine products are indexed immediately: repository and family are
+# ecosystem-owned facts that do not depend on a manifest existing.
+# manifest_status distinguishes "indexed" from "described".
+products:
+  repocode:
+    repository: nextbridgehq/repocode
+    family: agent-development-environment
+    manifest_status: present
+
+  block-builder:
+    repository: nextbridgehq/block-builder
+    family: content-management
+    manifest_status: present
+
+  graphpowers:
+    repository: nextbridgehq/graphpowers
+    family: agent-development-environment
+    manifest_status: present
+
+  project-charter:
+    repository: nextbridgehq/project-charter
+    family: agent-development-environment
+    manifest_status: present
+
+  code-comrades:
+    repository: nextbridgehq/code-comrades
+    family: agent-development-environment
+    manifest_status: present
+
+  agent-loop-guard:
+    repository: nextbridgehq/agent-loop-guard
+    family: agent-runtime-safety
+    manifest_status: present
+
+  registry-guard:
+    repository: nextbridgehq/registry-guard
+    family: dependency-risk
+    manifest_status: present
+
+  edge-compat-check:
+    repository: nextbridgehq/edge-compat-check
+    family: dependency-risk
+    manifest_status: present
+
+  package-pilot:
+    repository: nextbridgehq/package-pilot
+    family: package-development-workflow
+    manifest_status: present
+
+# Families group by user and problem. Every family must name its audience:
+# grouping by anything else is what the Phase 0 audit found wrong with the
+# previously proposed three-family split.
+families:
+  agent-development-environment:
+    name: Agent Development Environment
+    audience: Developers using an AI coding agent on an existing repository.
+  agent-runtime-safety:
+    name: Agent Runtime Safety
+    audience: Developers building AI agents.
+  dependency-risk:
+    name: Dependency Risk
+    audience: Any JavaScript or TypeScript developer adding a dependency.
+  package-development-workflow:
+    name: Package Development Workflow
+    audience: Node.js package authors testing a library before release.
+  content-management:
+    name: Content Management
+    audience: Teams building on Payload CMS.
+
+# Empty, and correct. The Phase 0 audit found zero Nextbridge-to-Nextbridge
+# integrations. Rule R-REF5 therefore makes maturity "integrated" unreachable
+# today, which is the intended meaning of that level.
+integrations: []
+
+# Empty, and correct. Rule R-REF6 requires a solution to rest on at least one
+# integration at "supported" or better, so no solution can exist yet.
+solutions: []

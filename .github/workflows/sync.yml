@@ -1,0 +1,71 @@
+name: sync
+
+# Refreshes the manifest snapshots in manifests/ from the product repositories
+# and opens a pull request when anything changed. It never auto-merges: a
+# product changing its own manifest is a reviewable ecosystem event, not a
+# background update.
+
+on:
+  schedule:
+    - cron: "41 6 * * 1" # Mondays 06:41 UTC, after repo-consistency
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ecosystem
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: ecosystem/package-lock.json
+
+      - run: npm ci
+        working-directory: ecosystem
+
+      - name: Check out the described product repositories
+        env:
+          GH_TOKEN: ${{ secrets.ECOSYSTEM_READ_TOKEN || github.token }}
+        run: |
+          set -euo pipefail
+          repos=$(node -e "
+            const yaml = require('./ecosystem/node_modules/js-yaml');
+            const fs = require('node:fs');
+            const r = yaml.load(fs.readFileSync('ecosystem/registry.yaml', 'utf8'));
+            for (const p of Object.values(r.products)) {
+              if (p.manifest_status === 'present') console.log(p.repository);
+            }
+          ")
+          for repo in $repos; do
+            gh repo clone "$repo" "${repo##*/}" -- --depth 1
+          done
+
+      - name: Sync manifests and recompile
+        working-directory: ecosystem
+        run: |
+          node scripts/sync.mjs --repos ..
+          node scripts/validate.mjs --repos ..
+          node scripts/compile.mjs
+
+      - name: Open a pull request when anything changed
+        uses: peter-evans/create-pull-request@v7
+        with:
+          path: ecosystem
+          branch: ecosystem/sync-manifests
+          title: "chore: sync product manifests"
+          commit-message: "chore: sync product manifests and recompile"
+          body: |
+            Automated snapshot refresh of `manifests/` from the product
+            repositories, with `catalog.json` and the canonical marketplace
+            recompiled.
+
+            Review what changed in each product manifest before merging.
+          delete-branch: true

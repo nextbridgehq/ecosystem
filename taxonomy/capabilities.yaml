@@ -1,0 +1,221 @@
+schema: nextbridge.dev/taxonomy/v1
+
+# Derived from the Phase 0 audit (sections 14 and 22), then extended by whatever
+# the RepoCode and Block Builder manifests actually needed.
+#
+# Two levels only. The audit established that this portfolio is broad and
+# shallow: most capabilities are held by exactly one product. A deeper hierarchy
+# would be scaffolding around nothing.
+#
+# The taxonomy grows when a product manifest needs a leaf that does not exist.
+# It does not grow speculatively. Seven products are still unmanifested, so this
+# file is expected to gain leaves in Phase 1.5 and may gain a category.
+
+categories:
+  codebase-intelligence:
+    name: Codebase Intelligence
+    description: Understanding what is in a repository and what depends on what.
+  agent-governance:
+    name: Agent Governance
+    description: Shaping or constraining what an AI agent is allowed to do.
+  agent-runtime-safety:
+    name: Agent Runtime Safety
+    description: Detecting and bounding agent behaviour at tool-call level.
+  code-transformation:
+    name: Code Transformation
+    description: Producing or changing source files and repository artifacts.
+  dependency-risk:
+    name: Dependency Risk
+    description: Deciding whether depending on a package is safe and whether it will run.
+  package-development:
+    name: Package Development
+    description: Authoring, linking, and locally testing a package before release.
+  content-modelling:
+    name: Content Modelling
+    description: Defining and versioning content structures in a CMS.
+  cross-cutting:
+    name: Cross-cutting
+    description: Capabilities that recur across categories and belong to no single one.
+
+capabilities:
+
+  # ── codebase-intelligence ──────────────────────────────────────────────
+  context-selection:
+    name: Context Selection
+    category: codebase-intelligence
+    note: >-
+      Choosing and ordering which parts of a repository are relevant to a task.
+      Includes the ranking that drives the choice; ranking-explanation covers
+      making that choice inspectable, which is a separate user-facing capability.
+  token-budgeting:
+    name: Token Budgeting
+    category: codebase-intelligence
+  content-compression:
+    name: Content Compression
+    category: codebase-intelligence
+    note: >-
+      Reducing a file's size while preserving its useful structure, in order to
+      fit a budget. Distinct from dropping the file.
+  import-graph-analysis:
+    name: Import Graph Analysis
+    category: codebase-intelligence
+    note: >-
+      Builds the dependency graph itself by parsing source. Deliberately not
+      merged with graph-impact-analysis, which consumes a graph built elsewhere.
+  graph-impact-analysis:
+    name: Graph Impact Analysis
+    category: codebase-intelligence
+    note: >-
+      Computes blast radius and reachability over a pre-built external graph.
+      Merging this with import-graph-analysis would erase a real product
+      boundary between building a graph and reasoning over one.
+  architecture-drift-detection:
+    name: Architecture Drift Detection
+    category: codebase-intelligence
+  repository-fact-extraction:
+    name: Repository Fact Extraction
+    category: codebase-intelligence
+  file-discovery:
+    name: File Discovery
+    category: codebase-intelligence
+    note: Walking a tree while honouring ignore rules. Genuinely shared.
+  ranking-explanation:
+    name: Ranking Explanation
+    category: codebase-intelligence
+  cache-stable-output:
+    name: Cache-stable Output
+    category: codebase-intelligence
+  remote-repository-fetch:
+    name: Remote Repository Fetch
+    category: codebase-intelligence
+
+  # ── agent-governance ───────────────────────────────────────────────────
+  permission-enforcement:
+    name: Permission Enforcement
+    category: agent-governance
+    note: >-
+      Blocks a disallowed action. Deliberately not merged with
+      agent-process-guidance, which only advises.
+  workflow-state-management:
+    name: Workflow State Management
+    category: agent-governance
+  human-approval-gating:
+    name: Human Approval Gating
+    category: agent-governance
+  capability-auditing:
+    name: Capability Auditing
+    category: agent-governance
+  agent-process-guidance:
+    name: Agent Process Guidance
+    category: agent-governance
+    note: Advisory only. See permission-enforcement.
+
+  # ── agent-runtime-safety ───────────────────────────────────────────────
+  loop-detection:
+    name: Loop Detection
+    category: agent-runtime-safety
+  call-budget-enforcement:
+    name: Call Budget Enforcement
+    category: agent-runtime-safety
+
+  # ── code-transformation ────────────────────────────────────────────────
+  batch-file-processing:
+    name: Batch File Processing
+    category: code-transformation
+  code-annotation:
+    name: Code Annotation
+    category: code-transformation
+  code-generation:
+    name: Code Generation
+    category: code-transformation
+    note: >-
+      Genuinely shared: test stubs and docs in one product, Payload block config
+      emitted from stored schemas in another.
+  artifact-generation:
+    name: Artifact Generation
+    category: code-transformation
+
+  # ── dependency-risk ────────────────────────────────────────────────────
+  package-verification:
+    name: Package Verification
+    category: dependency-risk
+    note: >-
+      Evaluates a package you have not installed, from registry metadata.
+      Deliberately not merged with vulnerability-audit.
+  typosquat-detection:
+    name: Typosquat Detection
+    category: dependency-risk
+  runtime-compatibility-checking:
+    name: Runtime Compatibility Checking
+    category: dependency-risk
+  lifecycle-script-inspection:
+    name: Lifecycle Script Inspection
+    category: dependency-risk
+    note: >-
+      Shared subject, different source: registry metadata before install versus
+      a local package.json before linking.
+  vulnerability-audit:
+    name: Vulnerability Audit
+    category: dependency-risk
+    note: >-
+      Reports known advisories against an installed tree. See
+      package-verification for the pre-install case.
+
+  # ── package-development ────────────────────────────────────────────────
+  package-linking:
+    name: Package Linking
+    category: package-development
+  sandbox-creation:
+    name: Sandbox Creation
+    category: package-development
+  local-registry-hosting:
+    name: Local Registry Hosting
+    category: package-development
+  dependency-visualization:
+    name: Dependency Visualization
+    category: package-development
+
+  # ── content-modelling ──────────────────────────────────────────────────
+  visual-schema-design:
+    name: Visual Schema Design
+    category: content-modelling
+  schema-persistence:
+    name: Schema Persistence
+    category: content-modelling
+    note: >-
+      Storing content-structure definitions outside application code, so they
+      change without a deployment.
+  schema-versioning:
+    name: Schema Versioning
+    category: content-modelling
+  schema-validation:
+    name: Schema Validation
+    category: content-modelling
+    note: >-
+      Scoped to content schemas. Not the same as validating an ecosystem
+      artifact or a knowledge graph; those are unrelated schemas and must not
+      be merged onto this leaf.
+  schema-import-export:
+    name: Schema Import and Export
+    category: content-modelling
+  cms-admin-ui-extension:
+    name: CMS Admin UI Extension
+    category: content-modelling
+  multi-tenancy:
+    name: Multi-tenancy
+    category: content-modelling
+
+  # ── cross-cutting ──────────────────────────────────────────────────────
+  ci-gate:
+    name: CI Gate
+    category: cross-cutting
+    note: Fail a pipeline on a computed threshold. Shared across several products.
+  git-scoping:
+    name: Git Scoping
+    category: cross-cutting
+  secret-scanning:
+    name: Secret Scanning
+    category: cross-cutting
+  semantic-search:
+    name: Semantic Search
+    category: cross-cutting

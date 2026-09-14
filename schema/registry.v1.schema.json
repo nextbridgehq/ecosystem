@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nextbridge.dev/schema/registry.v1.schema.json",
+  "title": "Nextbridge ecosystem registry v1",
+  "description": "Describes where each product fits in the ecosystem. An index and a curation list - never a copy of product metadata.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "marketplace", "products", "families", "integrations", "solutions"],
+  "properties": {
+    "schema": { "const": "nextbridge.dev/registry/v1" },
+    "marketplace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "owner", "members"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/slug",
+          "description": "The one canonical Claude Code marketplace name. Every product plugin must reference exactly this value (rule R-MK6)."
+        },
+        "name": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" },
+        "owner": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name"],
+          "properties": {
+            "name": { "type": "string", "minLength": 1 },
+            "email": { "type": "string" },
+            "url": { "type": "string" }
+          }
+        },
+        "members": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["product", "plugin"],
+            "properties": {
+              "product": { "$ref": "#/$defs/slug" },
+              "plugin": { "$ref": "#/$defs/slug" }
+            }
+          },
+          "description": "Ordered pointers, never plugin details. Every descriptive field is resolved from the product manifest at compile time."
+        }
+      }
+    },
+    "products": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "$ref": "#/$defs/slug" },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["repository", "family", "manifest_status"],
+        "properties": {
+          "repository": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+          },
+          "family": { "$ref": "#/$defs/slug" },
+          "manifest_status": {
+            "enum": ["present", "pending"],
+            "description": "present: a .nextbridge/product.yaml exists and is synced into manifests/. pending: the product is indexed but not yet described."
+          },
+          "manifest_path": {
+            "type": "string",
+            "description": "Override for the default .nextbridge/product.yaml location."
+          }
+        }
+      }
+    },
+    "families": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "$ref": "#/$defs/slug" },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "audience"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "audience": {
+            "type": "string",
+            "minLength": 10,
+            "description": "Who this family is for. Required because grouping by anything other than the user is what the Phase 0 audit found wrong with the previous families."
+          }
+        }
+      }
+    },
+    "integrations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["from", "to", "type", "interface", "status"],
+        "properties": {
+          "from": { "$ref": "#/$defs/slug" },
+          "to": { "type": "string", "minLength": 1 },
+          "external": { "type": "boolean", "default": false },
+          "type": { "type": "string", "minLength": 1 },
+          "interface": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["proposed", "experimental", "supported", "verified"] },
+          "verification": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["automated"],
+            "properties": {
+              "automated": { "type": "boolean" },
+              "workflow": { "type": "string" },
+              "test": { "type": "string" }
+            }
+          }
+        }
+      },
+      "description": "Ecosystem-owned relationship claims. Empty is the correct Phase 1 state and must stay valid."
+    },
+    "solutions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["$ref"],
+        "properties": { "$ref": { "type": "string" } }
+      },
+      "description": "References to solutions/*.yaml. Empty is the correct Phase 1 state: a solution requires at least one integration at supported or better (rule R-REF6)."
+    }
+  },
+  "$defs": {
+    "slug": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" }
+  }
+}

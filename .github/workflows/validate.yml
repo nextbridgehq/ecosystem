@@ -1,0 +1,57 @@
+name: validate
+
+# Layers 1 and 2 plus the generated artifacts. Everything here is offline and
+# deterministic, so it is the blocking check on every change.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+
+      - name: Schema and referential validation
+        run: node scripts/validate.mjs
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Hardening suite
+        run: npm run test:hardening
+
+      # CI never writes to the repository. A stale generated file is a red check
+      # with an obvious fix, not a surprise commit.
+      - name: Generated artifacts are up to date
+        run: node scripts/compile.mjs --check
+
+      - name: Compilation is deterministic
+        run: |
+          node scripts/compile.mjs
+          cp catalog.json /tmp/catalog.1
+          cp .claude-plugin/marketplace.json /tmp/marketplace.1
+          node scripts/compile.mjs
+          diff -u /tmp/catalog.1 catalog.json
+          diff -u /tmp/marketplace.1 .claude-plugin/marketplace.json
+
+      # A hand-edited generated file must fail, or the whole generate-and-diff
+      # discipline is decorative.
+      - name: A hand-edited artifact is rejected
+        run: |
+          printf '\n' >> catalog.json
+          if node scripts/compile.mjs --check; then
+            echo "::error::compile --check accepted a hand-edited catalog.json"
+            exit 1
+          fi
+          git checkout -- catalog.json

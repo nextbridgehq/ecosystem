@@ -1,0 +1,101 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { makeWorkspace, run, readFixture, writeFixture, ECOSYSTEM_ROOT } from './lib/fixture.mjs';
+
+/* ── Exit codes are the API ───────────────────────────────────────────── */
+
+test('exit code 0 means clean', () => {
+  const ws = makeWorkspace({ products: [] });
+  try {
+    assert.equal(run(ws, ['scripts/validate.mjs']).code, 0);
+  } finally { ws.cleanup(); }
+});
+
+test('exit code 1 means usage or internal error, never a validation failure', () => {
+  const ws = makeWorkspace({ products: [] });
+  try {
+    assert.equal(run(ws, ['scripts/sync.mjs']).code, 1);
+    assert.match(run(ws, ['scripts/sync.mjs']).stderr, /usage:/);
+
+    writeFixture(ws, 'registry.yaml', 'this: is: not: valid: yaml:\n');
+    const broken = run(ws, ['scripts/validate.mjs']);
+    assert.equal(broken.code, 1, broken.stdout + broken.stderr);
+    assert.match(broken.stderr, /^validate: /m);
+  } finally { ws.cleanup(); }
+});
+
+test('exit code 2 means validation errors or drift', () => {
+  const ws = makeWorkspace({ products: [] });
+  try {
+    writeFixture(ws, 'catalog.json', `${readFixture(ws, 'catalog.json')}\n`);
+    assert.equal(run(ws, ['scripts/compile.mjs', '--check']).code, 2);
+  } finally { ws.cleanup(); }
+});
+
+/* ── Every finding must be actionable ─────────────────────────────────── */
+
+test('every rule that can error names a subject and says what is wrong', async () => {
+  const { layer1, layer2, ERROR } = await import('../scripts/lib/rules.mjs');
+  const { paths, readYaml, loadManifests } = await import('../scripts/lib/io.mjs');
+  const registry = readYaml(paths.registry);
+  const taxonomy = readYaml(paths.taxonomy);
+  const manifests = loadManifests();
+
+  // Break one thing at a time and inspect the shape of what comes back.
+  // CORRECTED from the plan: mutating `.repository` is a no-op here because
+  // R-META1 lives in layer3 (needs a real repo checkout via --repos), which
+  // this test deliberately does not run. `.family` is checked by R-REF7 in
+  // layer2 and fires for real. See ledger for the verification.
+  const broken = structuredClone(registry);
+  broken.products['graphpowers'].family = 'bogus-family-xyz';
+  const findings = [...layer1({ registry: broken, taxonomy, manifests }), ...layer2({ registry: broken, taxonomy, manifests })];
+
+  for (const f of findings.filter((x) => x.severity === ERROR)) {
+    assert.ok(f.rule?.startsWith('R-'), `finding has no rule id: ${JSON.stringify(f)}`);
+    assert.ok(f.subject?.length > 0, `${f.rule} has no subject`);
+    assert.ok(f.message?.length > 15, `${f.rule} message is too terse to act on: "${f.message}"`);
+    assert.doesNotMatch(f.message, /^(invalid|error|failed)\.?$/i, `${f.rule} message says nothing`);
+  }
+
+  // Non-vacuous: this test exists to check real ERROR findings, not an
+  // empty loop. Confirm the mutation actually produced at least one.
+  assert.ok(findings.some((f) => f.severity === ERROR), 'mutation produced no ERROR findings - test would be vacuous');
+});
+
+test('every rule id in rules.mjs appears in the ecosystem README', () => {
+  const rules = readFileSync(join(ECOSYSTEM_ROOT, 'scripts', 'lib', 'rules.mjs'), 'utf8');
+  const readme = readFileSync(join(ECOSYSTEM_ROOT, 'README.md'), 'utf8');
+  const ids = [...new Set(rules.match(/R-[A-Z]+\d+/g) ?? [])].sort();
+  const undocumented = ids.filter((id) => !readme.includes(id));
+  assert.deepEqual(undocumented, [], `undocumented rules: ${undocumented.join(', ')}`);
+});
+
+/* ── Recovery: every failure has a stated way back to green ───────────── */
+
+test('drift in the snapshot is recoverable by running sync', () => {
+  const ws = makeWorkspace();
+  try {
+    writeFixture(ws, 'manifests/registry-guard.yaml', `${readFixture(ws, 'manifests/registry-guard.yaml')}\n# hand edited\n`);
+    const before = run(ws, ['scripts/validate.mjs', '--repos', '..']);
+    assert.equal(before.code, 2);
+    assert.match(before.stdout, /run scripts\/sync\.mjs/);
+
+    assert.equal(run(ws, ['scripts/sync.mjs', '--repos', '..']).code, 0);
+    assert.equal(run(ws, ['scripts/validate.mjs', '--repos', '..']).code, 0);
+  } finally { ws.cleanup(); }
+});
+
+test('drift in a generated artifact is recoverable by running compile', () => {
+  const ws = makeWorkspace({ products: [] });
+  try {
+    writeFixture(ws, 'catalog.json', '{}\n');
+    const before = run(ws, ['scripts/compile.mjs', '--check']);
+    assert.equal(before.code, 2);
+    assert.match(before.stderr, /Run `node scripts\/compile\.mjs`/);
+
+    assert.equal(run(ws, ['scripts/compile.mjs']).code, 0);
+    assert.equal(run(ws, ['scripts/compile.mjs', '--check']).code, 0);
+  } finally { ws.cleanup(); }
+});

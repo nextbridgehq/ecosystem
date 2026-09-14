@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nextbridge.dev/schema/catalog.v1.schema.json",
+  "title": "Nextbridge compiled catalog v1",
+  "description": "The generated, merged view of the ecosystem. This schema exists for consumers and as a guard that the compiler has not drifted. Never hand-edit catalog.json.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "_generated", "marketplace", "families", "products",
+    "categories", "capabilities", "integrations", "solutions"
+  ],
+  "properties": {
+    "schema": { "const": "nextbridge.dev/catalog/v1" },
+    "_generated": {
+      "type": "object",
+      "required": ["by", "inputs", "warning"],
+      "properties": {
+        "by": { "type": "string" },
+        "inputs": { "type": "array", "items": { "type": "string" } },
+        "warning": { "type": "string" }
+      }
+    },
+    "marketplace": {
+      "type": "object",
+      "required": ["id", "name", "owner", "members"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": ["string", "null"] },
+        "owner": { "type": "object" },
+        "members": { "type": "array" }
+      }
+    },
+    "families": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["name", "audience", "products"],
+        "properties": {
+          "name": { "type": "string" },
+          "audience": { "type": "string" },
+          "products": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "products": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "repository", "repository_url", "family", "described"],
+        "properties": {
+          "id": { "type": "string" },
+          "repository": { "type": "string" },
+          "repository_url": { "type": "string" },
+          "family": { "type": "string" },
+          "described": {
+            "type": "boolean",
+            "description": "false means the product is indexed by the ecosystem but has not yet published a product manifest. Everything below is then absent."
+          }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "described": { "const": true } }, "required": ["described"] },
+            "then": {
+              "required": [
+                "name", "description", "problem", "user", "capabilities",
+                "interfaces", "distribution", "runtime", "license", "maturity",
+                "plugins", "integrations"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "categories": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["name", "capabilities"],
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "capabilities": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["name", "category", "products"],
+        "properties": {
+          "name": { "type": "string" },
+          "category": { "type": "string" },
+          "note": { "type": "string" },
+          "products": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Computed by the compiler. The taxonomy never stores this."
+          }
+        }
+      }
+    },
+    "integrations": {
+      "type": "array",
+      "description": "Empty is valid and is the correct Phase 1 state."
+    },
+    "solutions": {
+      "type": "array",
+      "description": "Empty is valid and is the correct Phase 1 state."
+    }
+  }
+}
