@@ -1,0 +1,92 @@
+schema: nextbridge.dev/product/v1
+
+id: block-builder
+name: Payload Block Builder
+
+description:
+  short: >-
+    Visual block builder for Payload CMS v3 that stores block schemas in the
+    database instead of in code.
+  long: >-
+    Editors design content blocks in a drag-and-drop canvas, publish them, and
+    use them across any collection without a developer, a code change, or a
+    deployment. Block definitions live in the database with immutable, restorable
+    version snapshots, and can be exported to and imported from JSON or emitted
+    as Payload config.
+
+problem: >-
+  Every new block type or layout change in a Payload project requires a
+  developer to edit code, redeploy, and migrate, which turns routine content
+  work into engineering tickets.
+
+user:
+  - cms-developer
+  - content-editor
+
+capabilities:
+  core:
+    - visual-schema-design
+    - schema-persistence
+    - schema-versioning
+    - code-generation
+  secondary:
+    - schema-validation
+    - schema-import-export
+    - cms-admin-ui-extension
+    - multi-tenancy
+
+interfaces:
+  - type: library
+    package: "@nextbridgehq/payload-block-builder"
+    language: typescript
+    summary: >-
+      Exports the Payload plugin, the DB Layout collection field, both
+      collections, and six admin React components under the ./client entry point.
+
+  - type: cli
+    command: payload-block-builder
+    package: "@nextbridgehq/payload-block-builder"
+    summary: >-
+      A single init command that scaffolds the builder page and layout, injects
+      the admin field styles, and adds the plugin to payload.config.ts.
+
+  - type: http-endpoints
+    host: Payload CMS v3
+    routes:
+      - POST /block-builder/generate
+      - GET /block-builder/load/:slug
+      - POST /blocks/save
+      - GET /block-builder/versions/:slug
+    summary: >-
+      Handlers appended to the host application's config.endpoints, not a
+      standalone server. They require an X-Block-Builder header.
+
+distribution:
+  - channel: npm
+    packages:
+      - "@nextbridgehq/payload-block-builder"
+    access: public
+  - channel: github
+    repository: nextbridgehq/block-builder
+
+runtime:
+  language: typescript
+  os:
+    - linux
+    - macos
+    - windows
+  host:
+    name: Payload CMS v3
+    requires:
+      - "payload >=3.0.0"
+      - "@payloadcms/ui >=3.0.0"
+      - "next >=14.0.0"
+      - "react >=18.0.0"
+
+license: MIT
+
+maturity: stable
+
+plugins: []
+
+integrations: []

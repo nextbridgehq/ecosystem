@@ -1,0 +1,104 @@
+schema: nextbridge.dev/product/v1
+
+id: project-charter
+name: Project Charter
+
+description:
+  short: >-
+    Governance engine that turns a project's conventions into rules an AI agent
+    is actually held to.
+  long: >-
+    Conventions are generated or imported into a charter, validated, and then
+    enforced: the CLI fails a build on a violation, the pre-commit hook fails a
+    commit, and the MCP server exposes the same checks to an agent while it
+    works. A phased workflow tracks where a run is, records human approvals at
+    the gates that require one, and audits the artifacts each phase was supposed
+    to produce.
+
+problem: >-
+  An AI agent will agree to any convention you describe and then quietly ignore
+  it three files later, because nothing in the loop checks the work against the
+  rules or stops it when they are broken.
+
+user:
+  - developer-using-ai-agent
+  - engineering-lead
+  - repository-maintainer
+
+capabilities:
+  core:
+    - permission-enforcement
+    - workflow-state-management
+    - human-approval-gating
+    - capability-auditing
+    - agent-process-guidance
+  secondary:
+    - ci-gate
+    - artifact-generation
+
+interfaces:
+  - type: cli
+    command: charter
+    package: project-charter
+    summary: >-
+      Eight commands - init, run, status, approve, validate, enforce, audit,
+      watch. `enforce --format=ci` is the gate; `watch` runs it continuously.
+
+  - type: mcp
+    transport: stdio
+    command: charter-mcp
+    package: project-charter
+    tools:
+      - get_phase_instructions
+      - charter_status
+      - audit_test_plan
+      - validate_artifact
+      - charter_workflow_start
+      - charter_workflow_status
+      - charter_workflow_approve
+      - charter_workflow_advance
+      - charter_dry_run
+    resources:
+      - reference://git-protocol
+      - reference://test-plan
+      - reference://ci-bootstrap
+      - template://conventions
+      - template://test-plan
+    summary: >-
+      Nine tools, five resources, and five prompts over the same engine the CLI
+      uses. Requires the [mcp] extra.
+
+  - type: library
+    package: project-charter
+    language: python
+    summary: >-
+      The charter package - conventions, workflow state machine, and enforcement
+      engine - importable directly. Provider extras are optional.
+
+  - type: pre-commit-hook
+    id: charter-enforce
+    summary: >-
+      Runs `charter enforce --format=ci` on every commit, with no filenames
+      passed, so the whole charter is evaluated rather than the staged diff.
+
+distribution:
+  - channel: pypi
+    packages:
+      - project-charter
+  - channel: github
+    repository: nextbridgehq/project-charter
+
+runtime:
+  language: python
+  python: ">=3.11"
+
+license: MIT
+
+maturity: stable
+
+# Four skills ship inside the wheel (force-included as charter/skills) and are
+# read by the engine. There is no .claude-plugin/ and no plugin: a skills/
+# directory is not a plugin, and nothing here infers one.
+plugins: []
+
+integrations: []

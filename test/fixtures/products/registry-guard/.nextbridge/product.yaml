@@ -1,0 +1,71 @@
+schema: nextbridge.dev/product/v1
+
+id: registry-guard
+name: Registry Guard
+
+description:
+  short: >-
+    Checks an npm package against the registry before you install it, and says
+    why it looks risky.
+  long: >-
+    Given one or more package names, it validates the names, asks the registry
+    whether they exist, and reports what it finds without installing anything:
+    a name that does not exist and the popular package it is one edit away from,
+    lifecycle scripts that would run on install, a package published in the last
+    thirty days, a package with a single version, missing maintainer metadata,
+    and deprecation. Results carry a risk level, and the CLI's exit code
+    separates high risk from a registry it could not read.
+
+problem: >-
+  An AI agent will confidently suggest a package name that does not exist, and
+  the closest real name to it may be a typosquat with an install script, which
+  you find out by running npm install.
+
+user:
+  - javascript-developer
+  - developer-using-ai-agent
+  - package-maintainer
+
+capabilities:
+  core:
+    - package-verification
+    - typosquat-detection
+    - lifecycle-script-inspection
+  secondary:
+    - ci-gate
+
+interfaces:
+  - type: cli
+    command: registry-guard
+    package: registry-guard
+    summary: >-
+      Checks one or more names, with --json for structured output and a
+      configurable registry, timeout, and concurrency. Exit codes separate high
+      risk (1) from usage error (2) and unreadable registry analysis (3).
+
+  - type: library
+    package: registry-guard
+    language: javascript
+    summary: >-
+      checkPackage() and checkPackages() return the same structured results the
+      CLI prints. ESM, with bundled .d.ts declarations.
+
+distribution:
+  - channel: npm
+    packages:
+      - registry-guard
+    access: public
+  - channel: github
+    repository: nextbridgehq/registry-guard
+
+runtime:
+  language: javascript
+  node: ">=18"
+
+license: MIT
+
+maturity: stable
+
+plugins: []
+
+integrations: []

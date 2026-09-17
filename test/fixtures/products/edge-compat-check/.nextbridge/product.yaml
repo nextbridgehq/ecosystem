@@ -1,0 +1,72 @@
+schema: nextbridge.dev/product/v1
+
+id: edge-compat-check
+name: Edge Compat Check
+
+description:
+  short: >-
+    Scans a dependency tree for Node APIs that do not exist on edge runtimes,
+    before the deploy fails.
+  long: >-
+    Static analysis over your dependencies' shipped source, matched against a
+    profile per target runtime - Vercel Edge, Cloudflare Workers, Netlify Edge,
+    Fastly Compute, or a strict union. It reads npm, pnpm, and Yarn Classic
+    lockfiles for the transitive tree, ignores type-only imports so they do not
+    produce false findings, bounds each scan by file size and file count, and
+    emits stable, diff-friendly output with a non-zero exit for CI.
+
+problem: >-
+  A dependency that works locally on Node fails at the edge because it reaches
+  for a core module the runtime does not have, and you find out from a failed
+  deploy rather than from the dependency's own metadata.
+
+user:
+  - javascript-developer
+  - repository-maintainer
+
+capabilities:
+  core:
+    - runtime-compatibility-checking
+  secondary:
+    - ci-gate
+    - file-discovery
+
+interfaces:
+  - type: cli
+    command: edge-compat-check
+    package: edge-compat-check
+    summary: >-
+      Scans the current project against a target profile, with --ci for a
+      non-zero exit, --json for machine-readable output, --ignore to suppress
+      specific core modules, and --include-dev.
+
+  - type: library
+    package: edge-compat-check
+    language: javascript
+    summary: >-
+      The same scan programmatically, with bundled .d.ts declarations and no
+      runtime dependencies.
+
+distribution:
+  - channel: npm
+    packages:
+      - edge-compat-check
+    access: public
+  - channel: github
+    repository: nextbridgehq/edge-compat-check
+
+runtime:
+  language: javascript
+  node: ">=18"
+
+license: MIT
+
+# Versioned 1.0.0, but experimental by process, and that is the honest value:
+# no CI, no CHANGELOG, no release workflow, and a known defect in the public
+# JSON `location` field, which uses the host path separator, so its own test
+# suite fails on Windows.
+maturity: experimental
+
+plugins: []
+
+integrations: []

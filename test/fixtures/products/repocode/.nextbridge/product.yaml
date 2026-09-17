@@ -1,0 +1,115 @@
+schema: nextbridge.dev/product/v1
+
+id: repocode
+name: RepoCode
+
+description:
+  short: >-
+    Builds the smallest useful codebase context for a task, for AI coding agents
+    and LLMs.
+  long: >-
+    Given a task, query, diff, or pull request plus a token budget, RepoCode
+    discovers files, ranks them by structural importance, import centrality,
+    recency, and query relevance, follows what they depend on, compresses
+    lower-ranked files rather than truncating, and fits the highest-value
+    selection into the budget. Ships as a CLI, an MCP server, an embeddable
+    core library, and a GitHub Action.
+
+problem: >-
+  Large repositories contain far more code than a model needs for any one task.
+  Naive packing either truncates arbitrarily or spends the whole budget on code
+  the task never touches.
+
+user:
+  - developer-using-ai-agent
+  - ai-agent-developer
+
+capabilities:
+  core:
+    - context-selection
+    - token-budgeting
+    - content-compression
+    - import-graph-analysis
+  secondary:
+    - file-discovery
+    - git-scoping
+    - ranking-explanation
+    - cache-stable-output
+    - remote-repository-fetch
+    - secret-scanning
+    - semantic-search
+    - ci-gate
+
+interfaces:
+  - type: cli
+    command: repocode
+    package: repocode
+    summary: >-
+      Primary entry point. Task queries, git and PR scoping, budgets,
+      compression tiers, ranking explanation, and an interactive TUI.
+
+  - type: mcp
+    transport: stdio
+    command: npx
+    args: ["-y", "-p", "@repocode/mcp", "repocode-mcp"]
+    package: "@repocode/mcp"
+    tools:
+      - get_context
+      - explain_selection
+      - pack_repository
+      - search_files
+      - get_file_context
+      - get_git_context
+      - get_architecture
+    resources:
+      - "repocode:///{repoPath}/files"
+      - "repocode:///{repoPath}/file/{filePath}"
+    summary: >-
+      Exposes context tools to MCP clients. Detected secrets are redacted
+      automatically in this mode.
+
+  - type: library
+    package: "@repocode/core"
+    language: typescript
+    summary: >-
+      The whole pipeline. The CLI and the MCP server both import it directly,
+      without subprocesses.
+
+  - type: github-action
+    ref: nextbridgehq/repocode
+    summary: >-
+      Fails a PR check when the diff plus its import-graph dependencies does not
+      fit a token budget. Reports through job logs and the step summary.
+
+distribution:
+  - channel: npm
+    packages:
+      - repocode
+      - "@repocode/core"
+      - "@repocode/mcp"
+    access: public
+  - channel: github
+    repository: nextbridgehq/repocode
+
+runtime:
+  language: typescript
+  node: ">=20"
+  os:
+    - linux
+    - macos
+    - windows
+
+license: MIT
+
+maturity: stable
+
+plugins: []
+
+integrations:
+  - to: repomix
+    external: true
+    type: config-import
+    interface: file
+    status: supported
+    contract:
+      consumes: repomix.config.json
