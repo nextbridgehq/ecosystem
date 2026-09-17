@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { makeWorkspace, run, readFixture, patchProduct, ALL_PRODUCTS, ECOSYSTEM_ROOT } from './lib/fixture.mjs';
+import { makeWorkspace, run, readFixture, patchProduct, ALL_PRODUCTS, ECOSYSTEM_ROOT, FIXTURES_ROOT } from './lib/fixture.mjs';
 
 test('a fixture workspace reproduces the real ecosystem exactly', () => {
   const ws = makeWorkspace();
@@ -40,10 +40,10 @@ test('the fixture catalog is byte-identical to the committed catalog', () => {
 
 test('a fixture can be mutated without touching the real tree', () => {
   const ws = makeWorkspace({ products: ['graphpowers'] });
-  const realBefore = readFileSync(join(ECOSYSTEM_ROOT, '..', 'graphpowers', '.nextbridge', 'product.yaml'), 'utf8');
+  const realBefore = readFileSync(join(FIXTURES_ROOT, 'graphpowers', '.nextbridge', 'product.yaml'), 'utf8');
   try {
     patchProduct(ws, 'graphpowers', '.nextbridge/product.yaml', (t) => `${t}\n# fixture mutation\n`);
-    const after = readFileSync(join(ECOSYSTEM_ROOT, '..', 'graphpowers', '.nextbridge', 'product.yaml'), 'utf8');
+    const after = readFileSync(join(FIXTURES_ROOT, 'graphpowers', '.nextbridge', 'product.yaml'), 'utf8');
     assert.equal(after, realBefore, 'the real product.yaml was modified');
   } finally {
     ws.cleanup();

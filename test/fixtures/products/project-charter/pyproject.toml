@@ -1,6 +1,17 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "project-charter"
 version = "0.1.0"
 license = "MIT"
+requires-python = ">=3.11"
+
 [project.urls]
+Homepage = "https://github.com/nextbridgehq/project-charter"
 Repository = "https://github.com/nextbridgehq/project-charter"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+

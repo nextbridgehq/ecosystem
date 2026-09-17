@@ -7,6 +7,6 @@
     "url": "https://github.com/nextbridgehq/edge-compat-check.git"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=18"
   }
 }

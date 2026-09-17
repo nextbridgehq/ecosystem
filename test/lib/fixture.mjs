@@ -16,7 +16,7 @@ import { tmpdir } from 'node:os';
 import { ROOT } from '../../scripts/lib/io.mjs';
 
 export const ECOSYSTEM_ROOT = ROOT;
-export const WORKSPACE_ROOT = resolve(ROOT, '..');
+export const FIXTURES_ROOT = resolve(ROOT, 'test', 'fixtures', 'products');
 
 export const ALL_PRODUCTS = [
   'agent-loop-guard', 'block-builder', 'code-comrades', 'edge-compat-check',
@@ -37,11 +37,20 @@ const copyTree = (from, to) =>
   });
 
 export function makeWorkspace({ products = ALL_PRODUCTS, prefix = 'nb-fix-' } = {}) {
+  if (!existsSync(FIXTURES_ROOT)) {
+    throw new Error(`Fixtures root directory not found at ${FIXTURES_ROOT}`);
+  }
   const root = mkdtempSync(join(tmpdir(), prefix));
   const eco = join(root, 'ecosystem');
 
   copyTree(ECOSYSTEM_ROOT, eco);
-  for (const name of products) copyTree(join(WORKSPACE_ROOT, name), join(root, name));
+  for (const name of products) {
+    const fixturePath = join(FIXTURES_ROOT, name);
+    if (!existsSync(fixturePath)) {
+      throw new Error(`Synthetic fixture not found for product: "${name}" at ${fixturePath}`);
+    }
+    copyTree(fixturePath, join(root, name));
+  }
 
   // Link the dependencies rather than copying them.
   const modules = join(eco, 'node_modules');
