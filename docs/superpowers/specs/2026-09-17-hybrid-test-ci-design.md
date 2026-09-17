@@ -3,7 +3,7 @@
 **Date**: 2026-09-17  
 **Topic**: Hybrid Test & CI Architecture for Nextbridge Ecosystem  
 **Target Repository**: `nextbridgehq/ecosystem`  
-**Objective**: Fix GitHub Actions `validate.yml` failures (35 failing tests due to missing sibling repositories) by establishing a clean, 3-tier hybrid test and CI architecture that makes default CI and local testing 100% hermetic with respect to product repositories, while preserving live repository integration testing.
+**Objective**: Fix GitHub Actions `validate.yml` failures (35 failing tests due to missing sibling repositories) by establishing a clean, 3-tier hybrid test and CI architecture. Default CI is hermetic with respect to product repositories. Local `npm test` remains deterministic and does not require product repositories; when sibling repositories happen to be available, optional Tier 3 integration tests may execute automatically.
 
 ---
 
@@ -19,13 +19,20 @@ The architectural intent declared in `validate.yml` was to execute offline and d
 
 ## 2. Architecture & Tiered Test Model
 
-The ecosystem testing architecture is divided into three distinct tiers:
+The ecosystem testing architecture is divided into three distinct tiers based on **data source and environment isolation**:
 
 | Tier | Purpose | Target / Data Source | External Repositories | Network Dependency | Default CI (`validate.yml`) |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Tier 1** | Schema, referential integrity & deterministic compilation | In-tree files (`registry.yaml`, `taxonomy/`, `manifests/`, `catalog.json`, `marketplace.json`) | None | None | **Always runs** |
 | **Tier 2** | Negative drift & rule-violation enforcement | Synthetic, lightweight fixtures in `test/fixtures/products/` | None (read-only fixtures) | None | **Always runs** |
 | **Tier 3** | Live product repository integration | Real sibling checkouts (`../<product>`) | Required if enabled | None (local checkouts) | **Conditional / Graceful Skip** |
+
+### 2.1 Layer vs. Tier Distinction
+It is critical to distinguish between **validation rules** (Layers 1, 2, and 3) and **test tiers** (Tiers 1, 2, and 3):
+- **Layer 3 validation rules** inspect repository structure (e.g. `R-META1` repository URLs, `R-META2` npm private flags, `R-META4` node floors, `R-META5` CI workflows, `R-MK2` stray marketplaces, `R-MK7` skill/hook component counts).
+- **Tier 2 exercises Layer 3 rule logic against synthetic fixtures** to prove that rules catch violations and accept clean baselines deterministically and offline.
+- **Tier 3 exercises Layer 3 rule logic against live repositories** to prove that real production checkouts conform to their ecosystem manifests.
+- *"Tier 3" refers to the data source (live repositories), not to the rule implementation itself.*
 
 ---
 
@@ -70,7 +77,7 @@ Each product fixture contains only the metadata files evaluated by Layer 3 rules
   ```
 - **Preserve API compatibility**:
   `makeWorkspace({ products = ALL_PRODUCTS, prefix = 'nb-fix-' } = {})` preserves its current signature and return shape (`{ root, eco, repo, cleanup }`).
-- **Fast, lightweight copying**:
+- **Lightweight, deterministic copying**:
   `copyTree(join(FIXTURES_ROOT, name), join(root, name))` operates on minimal synthetic trees. Fixture copying becomes lightweight and deterministic across both Linux and Windows filesystems.
 
 ### 4.2 Module Contract for `test/lib/repos.mjs`
@@ -79,7 +86,7 @@ Each product fixture contains only the metadata files evaluated by Layer 3 rules
 ```javascript
 /**
  * Resolves repository paths for Tier 3 testing with deterministic precedence:
- * 1. Explicit CLI arguments (--repos <dir...>)
+ * 1. Explicit CLI arguments (--repos <path...> or --repos-dir <dir>)
  * 2. Environment variable (ECOSYSTEM_REPOS_DIR)
  * 3. Registry-driven sibling discovery (../<product>)
  * 4. Fallback: Graceful Skip (only when discovery was automatic)
@@ -90,13 +97,18 @@ export function resolveLiveRepos(options = {});
 export function formatSkipMessage(reason);
 ```
 
+#### Clean CLI Argument Distinction
+- `--repos <path...>`: Specifies one or more explicit repository paths to test.
+- `--repos-dir <dir>`: Specifies a parent directory containing registered repository checkouts.
+- `ECOSYSTEM_REPOS_DIR`: Environment variable equivalent to `--repos-dir`.
+
 #### Deterministic Resolution Precedence
 ```text
                     resolveLiveRepos()
                            │
               ┌────────────┴────────────┐
               │                         │
-        --repos supplied?          No --repos
+        --repos / --repos-dir?     No CLI flag
               │                         │
              YES                  ENV supplied?
               │                    /          \
@@ -112,12 +124,12 @@ export function formatSkipMessage(reason);
 
 1. **Explicit `--repos <paths...>`**:
    If any requested repository does not exist on disk, throws a descriptive error immediately (`Explicitly requested repository not found at: <path>`).
-2. **Explicit `ECOSYSTEM_REPOS_DIR`**:
-   If the specified directory does not exist, throws a descriptive error immediately (`Configured ECOSYSTEM_REPOS_DIR not found at: <path>`). If it exists, discovers indexed products within it.
+2. **Explicit `--repos-dir <dir>` or `ECOSYSTEM_REPOS_DIR`**:
+   If the specified directory does not exist, throws a descriptive error immediately (`Configured repos directory not found at: <path>`). If it exists, discovers indexed products within it.
 3. **Implicit Sibling Discovery**:
    Inspects `registry.yaml` for indexed products and checks for directories at `../<product>`.
    - Permissive: Runs against whichever registered products are physically present.
-   - Reports discovery stats (`Discovered: N / Total: M`).
+   - Dynamic reporting: Reports exact discovery counts (e.g. `Discovered: N / Total: M`).
 4. **Implicit Absent Fallback**:
    If no repositories are discovered and no explicit configuration was provided, marks Tier 3 as gracefully skipped (`reason: 'sibling repositories not available'`).
 
@@ -137,7 +149,7 @@ export function formatSkipMessage(reason);
    - `test/error-contract.test.mjs`
 3. **Tier 3 (Live Repository Integration)**:
    - `test/integration-repos.test.mjs`:
-     Executes `resolveLiveRepos()`. If skipped, registers `t.skip(formatSkipMessage(reason))`. If resolved, executes live Layer 3 rules across the discovered repositories.
+     Executes `resolveLiveRepos()`. If skipped, registers `t.skip(formatSkipMessage(reason))`. If resolved, executes live Layer 3 rules across the discovered repositories and dynamically reports `✓ Tier 3 — Live repository integration: N/N repositories verified`.
 
 ---
 
@@ -148,7 +160,7 @@ export function formatSkipMessage(reason);
 {
   "scripts": {
     "validate": "node scripts/validate.mjs",
-    "validate:repos": "node scripts/validate.mjs --repos ..",
+    "validate:repos": "node scripts/validate.mjs --repos-dir ..",
     "compile": "node scripts/compile.mjs",
     "check": "node scripts/validate.mjs && node scripts/compile.mjs --check",
     "sync": "node scripts/sync.mjs",
@@ -180,7 +192,7 @@ export function formatSkipMessage(reason);
   - Total: 100% Green CI on every commit.
 
 #### `repo-consistency.yml` (Scheduled & PR Cross-Repository Verification)
-- **Environment**: Clones `nextbridgehq/ecosystem` and shallow-clones all 9 registered product repositories as siblings (`..`).
+- **Environment**: Clones `nextbridgehq/ecosystem` and shallow-clones all registered product repositories (dynamically derived from `registry.yaml`) as siblings (`..`).
 - **Execution**:
   ```yaml
   - name: Live repository integration tests (Tier 3)
@@ -190,7 +202,7 @@ export function formatSkipMessage(reason);
     run: npm run test:repos
   ```
 - **Output Experience**:
-  - Tier 3: `✓ Tier 3 — Live repository integration: 9/9 repositories verified`
+  - Tier 3: `✓ Tier 3 — Live repository integration: N/N repositories verified` (dynamically evaluated against the registry).
 
 ---
 
@@ -201,10 +213,10 @@ export function formatSkipMessage(reason);
    - Verify all Tier 1 and Tier 2 tests pass.
    - Verify Tier 3 emits `○ Tier 3 — Live repository integration: SKIPPED (sibling repositories not available)` with exit code 0.
 2. **Local Integration Verification (Tier 3 Live)**:
-   - Run `npm run test:repos` with `ECOSYSTEM_REPOS_DIR=..`.
-   - Verify all 9 sibling repositories are discovered and pass Layer 3 checks.
+   - Run `npm run test:repos` with `ECOSYSTEM_REPOS_DIR=..` (or `--repos-dir ..`).
+   - Verify all registered sibling repositories are discovered and pass Layer 3 checks with dynamic `N/N` counts.
 3. **Explicit Error Semantics Verification**:
-   - Run `npm run test:repos -- --repos /nonexistent/path`.
+   - Run `npm run test:repos -- --repos /nonexistent/path` or `--repos-dir /nonexistent/dir`.
    - Verify it throws an error and fails immediately without silent skipping.
 4. **CI Compatibility Verification**:
    - Verify `validate.yml` workflow simulation executes cleanly without external network calls to product repositories.
