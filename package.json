@@ -14,13 +14,16 @@
   },
   "scripts": {
     "validate": "node scripts/validate.mjs",
-    "validate:repos": "node scripts/validate.mjs --repos ..",
+    "validate:repos": "node scripts/validate.mjs --repos-dir ..",
     "compile": "node scripts/compile.mjs",
     "check": "node scripts/validate.mjs && node scripts/compile.mjs --check",
     "sync": "node scripts/sync.mjs",
-    "verify:clean-env": "node scripts/verify-clean-env.mjs",
     "test": "node --test test/*.test.mjs",
-    "test:hardening": "node --test test/fixture.test.mjs test/lifecycle.test.mjs test/sync-lifecycle.test.mjs test/drift-repository.test.mjs test/drift-marketplace.test.mjs test/evolution-plugin.test.mjs test/evolution-taxonomy.test.mjs test/error-contract.test.mjs"
+    "test:contract": "node --test test/compile.test.mjs test/validate.test.mjs",
+    "test:unit": "npm run test:contract",
+    "test:fixtures": "node --test test/drift-marketplace.test.mjs test/drift-repository-fixture.test.mjs test/fixture.test.mjs test/lifecycle.test.mjs test/sync-lifecycle.test.mjs test/evolution-*.test.mjs test/error-contract.test.mjs",
+    "test:hardening": "npm run test:fixtures",
+    "test:repos": "node --test test/integration-repos.test.mjs"
   },
   "devDependencies": {
     "ajv": "^8.17.1",

@@ -1,7 +1,7 @@
 name: validate
 
-# Layers 1 and 2 plus the generated artifacts. Everything here is offline and
-# deterministic, so it is the blocking check on every change.
+# Layers 1 and 2 plus synthetic fixtures and generated artifacts.
+# Hermetic with respect to product repositories; deterministic and independent of sibling checkouts.
 
 on:
   push:
@@ -28,8 +28,8 @@ jobs:
       - name: Unit tests
         run: npm test
 
-      - name: Hardening suite
-        run: npm run test:hardening
+      - name: Fixture and drift suite (Tier 2)
+        run: npm run test:fixtures
 
       # CI never writes to the repository. A stale generated file is a red check
       # with an obvious fix, not a surprise commit.

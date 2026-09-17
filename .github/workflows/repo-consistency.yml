@@ -54,7 +54,11 @@ jobs:
 
       - name: Repository consistency (layers 1-3)
         working-directory: ecosystem
-        run: node scripts/validate.mjs --repos ..
+        env:
+          ECOSYSTEM_REPOS_DIR: ..
+        run: |
+          node scripts/validate.mjs --repos-dir ..
+          npm run test:repos
 
       # The snapshots in manifests/ must still match the product repositories.
       - name: Synced manifests are current
