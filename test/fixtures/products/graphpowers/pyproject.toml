@@ -1,0 +1,6 @@
+[project]
+name = "graphpowers"
+version = "0.1.0"
+license = "MIT"
+[project.urls]
+Repository = "https://github.com/nextbridgehq/graphpowers"

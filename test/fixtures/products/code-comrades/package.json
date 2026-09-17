@@ -1,0 +1,12 @@
+{
+  "name": "@nextbridge/code-comrades",
+  "version": "0.1.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nextbridgehq/code-comrades.git"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

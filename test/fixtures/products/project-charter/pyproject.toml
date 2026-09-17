@@ -1,0 +1,6 @@
+[project]
+name = "project-charter"
+version = "0.1.0"
+license = "MIT"
+[project.urls]
+Repository = "https://github.com/nextbridgehq/project-charter"

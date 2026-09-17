@@ -1,0 +1,13 @@
+{
+  "name": "package-pilot",
+  "version": "0.1.0",
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nextbridgehq/package-pilot.git"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

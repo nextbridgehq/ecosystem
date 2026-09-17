@@ -1,0 +1,12 @@
+{
+  "name": "agent-loop-guard",
+  "version": "0.1.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nextbridgehq/agent-loop-guard.git"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
