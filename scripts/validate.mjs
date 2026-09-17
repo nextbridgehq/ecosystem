@@ -2,9 +2,9 @@
 /**
  * Validates the ecosystem.
  *
- *   node scripts/validate.mjs                 layers 1 and 2 (offline)
- *   node scripts/validate.mjs --repos ../     adds layer 3 against local checkouts
- *   node scripts/validate.mjs --json          machine-readable findings
+ *   node scripts/validate.mjs                     layers 1 and 2 (offline)
+ *   node scripts/validate.mjs --repos-dir ../     adds layer 3 against local checkouts
+ *   node scripts/validate.mjs --json              machine-readable findings
  *
  * Exit codes are the API: 0 clean, 1 usage/internal error, 2 validation errors.
  */
@@ -19,7 +19,7 @@ const flag = (name) => {
 };
 const has = (name) => argv.includes(name);
 
-const reposDir = flag('--repos');
+const reposDir = flag('--repos-dir') || flag('--repos') || process.env.ECOSYSTEM_REPOS_DIR || null;
 const asJson = has('--json');
 
 let findings;
@@ -37,7 +37,7 @@ try {
   if (reposDir !== null) {
     findings.push(...layer3({ registry, manifests, reposDir: resolve(reposDir) }));
   } else {
-    findings.push({ rule: 'R-REPO', severity: SKIP, subject: 'layer 3', message: 'not run - pass --repos <dir> to check repository consistency' });
+    findings.push({ rule: 'R-REPO', severity: SKIP, subject: 'layer 3', message: 'not run - pass --repos-dir <dir> or set ECOSYSTEM_REPOS_DIR to check repository consistency' });
   }
 } catch (error) {
   process.stderr.write(`validate: ${error.message}\n`);
