@@ -33,8 +33,9 @@ jobs:
       - run: npm ci
         working-directory: ecosystem
 
-      # Shallow clone every indexed product. A repository that cannot be
-      # cloned produces a `skipped` finding rather than a false pass.
+      # Shallow clone every indexed product. A clone failure fails the job:
+      # layer 3 against a missing checkout would only report `skipped` and pass.
+      # Every repository is tried first so the log lists all failures.
       - name: Check out the indexed product repositories
         env:
           GH_TOKEN: ${{ secrets.ECOSYSTEM_READ_TOKEN || github.token }}
@@ -46,11 +47,16 @@ jobs:
             const r = yaml.load(fs.readFileSync('ecosystem/registry.yaml', 'utf8'));
             for (const p of Object.values(r.products)) console.log(p.repository);
           ")
+          failed=0
           for repo in $repos; do
             name="${repo##*/}"
             if [ -d "$name" ]; then continue; fi
-            gh repo clone "$repo" "$name" -- --depth 1 || echo "::warning::could not clone $repo"
+            if ! gh repo clone "$repo" "$name" -- --depth 1; then
+              echo "::error::could not clone $repo"
+              failed=1
+            fi
           done
+          exit "$failed"
 
       - name: Repository consistency (layers 1-3)
         working-directory: ecosystem
