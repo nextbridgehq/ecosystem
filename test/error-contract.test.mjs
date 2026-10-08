@@ -34,6 +34,17 @@ test('exit code 2 means validation errors or drift', () => {
   } finally { ws.cleanup(); }
 });
 
+test('a manifest whose id does not match its filename is a schema error', () => {
+  const ws = makeWorkspace({ products: [] });
+  try {
+    writeFixture(ws, 'manifests/misnamed.yaml', readFixture(ws, 'manifests/graphpowers.yaml'));
+    const r = run(ws, ['scripts/validate.mjs', '--json']);
+    assert.equal(r.code, 2, r.stdout + r.stderr);
+    const hits = JSON.parse(r.stdout).errors.filter((f) => f.rule === 'R-SCHEMA');
+    assert.ok(hits.some((f) => f.subject === 'manifests/misnamed.yaml'), JSON.stringify(hits));
+  } finally { ws.cleanup(); }
+});
+
 /* ── Every finding must be actionable ─────────────────────────────────── */
 
 test('every rule that can error names a subject and says what is wrong', async () => {

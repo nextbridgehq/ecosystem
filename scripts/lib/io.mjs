@@ -39,13 +39,15 @@ export function listDir(p) {
   return isDir(p) ? readdirSync(p).sort() : [];
 }
 
-/** Every product manifest currently synced into manifests/, keyed by product id. */
+/**
+ * Every product manifest currently synced into manifests/, keyed by filename
+ * without `.yaml`. Layer 1 reports any manifest whose id differs from its key.
+ */
 export function loadManifests() {
   const out = {};
   for (const file of listDir(paths.manifests)) {
     if (!file.endsWith('.yaml')) continue;
-    const doc = readYaml(join(paths.manifests, file));
-    out[doc?.id ?? file.replace(/\.yaml$/, '')] = { file, doc };
+    out[file.replace(/\.yaml$/, '')] = { file, doc: readYaml(join(paths.manifests, file)) };
   }
   return out;
 }
