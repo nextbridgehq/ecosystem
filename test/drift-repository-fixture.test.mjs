@@ -177,6 +177,18 @@ test('R-MK7 accepts the real graphpowers plugin structure against fixture: 11 sk
   assert.deepEqual(rules(res, 'R-MK5'), []);
 });
 
+test('R-MK5 rejects a plugin manifest path that leaves the repository', () => {
+  const reg = clone(registry);
+  reg.products['code-comrades'].manifest_status = 'present';
+  // The sibling fixture exists, so an unchecked join would read it.
+  const doc = pluginManifest({ manifest: '../graphpowers/.claude-plugin/plugin.json' });
+  const res = layer3({ registry: reg, manifests: withManifests([doc]), reposDir: FIXTURES_ROOT });
+  const hits = rules(res, 'R-MK5');
+  assert.equal(hits.length, 1, JSON.stringify(hits));
+  assert.match(hits[0].message, /outside the repository/);
+  assert.deepEqual(rules(res, 'R-MK7'), []);
+});
+
 test('R-MK5 catches a plugin name that disagrees with its plugin.json fixture', () => {
   const reg = clone(registry);
   reg.products['code-comrades'].manifest_status = 'present';

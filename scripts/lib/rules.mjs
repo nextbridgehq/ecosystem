@@ -1,4 +1,4 @@
-import { join } from 'node:path';
+import { join, resolve, relative, isAbsolute } from 'node:path';
 import { existsSync } from 'node:fs';
 import Ajv from 'ajv/dist/2020.js';
 import {
@@ -385,7 +385,12 @@ export function layer3({ registry, manifests, reposDir }) {
     // R-MK5 / R-MK7 — plugin manifests exist, agree, and carry what they claim.
     for (const plugin of manifest.plugins ?? []) {
       const pluginRoot = plugin.path === '.' ? repoDir : join(repoDir, plugin.path.replace(/^\.\//, ''));
-      const pluginManifest = join(repoDir, plugin.manifest);
+      const pluginManifest = resolve(repoDir, plugin.manifest);
+      const inside = relative(repoDir, pluginManifest);
+      if (isAbsolute(inside) || inside.split(/[\\/]/)[0] === '..') {
+        out.push(finding('R-MK5', ERROR, subject, `plugin "${plugin.name}" declares manifest ${plugin.manifest}, which is outside the repository`));
+        continue;
+      }
       if (!existsSync(pluginManifest)) {
         out.push(finding('R-MK5', ERROR, subject, `plugin "${plugin.name}" declares manifest ${plugin.manifest}, which does not exist`));
         continue;
