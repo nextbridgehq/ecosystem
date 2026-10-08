@@ -81,7 +81,7 @@ export function writeFixture(ws, rel, text) {
 
 export function patchProduct(ws, repo, rel, mutate) {
   const file = join(ws.repo(repo), rel);
-  writeFileSync(file, mutate(readFileSync(file, 'utf8')), 'utf8');
+  writeFileSync(file, mutate(readFileSync(file, 'utf8').replace(/\r\n/g, '\n')), 'utf8');
 }
 
 export function patchJson(ws, repo, rel, mutate) {
