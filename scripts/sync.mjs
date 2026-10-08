@@ -30,20 +30,23 @@ const reposDir = resolve(reposArg);
 const registry = readYaml(paths.registry);
 mkdirSync(paths.manifests, { recursive: true });
 
+const present = Object.entries(registry.products ?? {}).filter(([, e]) => e.manifest_status === 'present');
+const sourceOf = (entry) =>
+  join(reposDir, entry.repository.split('/')[1], entry.manifest_path ?? '.nextbridge/product.yaml');
+
+// Check every source before writing anything, so one missing product cannot
+// leave manifests/ half-synced.
+const missing = present.filter(([, entry]) => !existsSync(sourceOf(entry)));
+for (const [id, entry] of missing) process.stderr.write(`sync: ${id}: missing ${sourceOf(entry)}\n`);
+if (missing.length > 0) process.exit(1);
+
 const expected = new Set();
 let changed = 0;
 
-for (const [id, entry] of Object.entries(registry.products ?? {})) {
-  if (entry.manifest_status !== 'present') continue;
-  const repoName = entry.repository.split('/')[1];
-  const source = join(reposDir, repoName, entry.manifest_path ?? '.nextbridge/product.yaml');
+for (const [id, entry] of present) {
+  const source = sourceOf(entry);
   const target = join(paths.manifests, `${id}.yaml`);
   expected.add(`${id}.yaml`);
-
-  if (!existsSync(source)) {
-    process.stderr.write(`sync: ${id}: missing ${source}\n`);
-    process.exit(1);
-  }
 
   const incoming = readFileSync(source, 'utf8').replace(/\r\n/g, '\n');
   const current = existsSync(target) ? readFileSync(target, 'utf8').replace(/\r\n/g, '\n') : null;

@@ -103,3 +103,21 @@ test('a product whose product.yaml disappears is a hard sync failure, not a sile
     ws.cleanup();
   }
 });
+
+test('a missing product.yaml stops sync before it writes any snapshot', () => {
+  const ws = makeWorkspace();
+  try {
+    // repocode syncs first and package-pilot last, so a loop that writes as it
+    // goes would update repocode before discovering the missing source.
+    const stale = `${readFixture(ws, 'manifests/repocode.yaml')}# stale\n`;
+    writeFileSync(join(ws.eco, 'manifests', 'repocode.yaml'), stale, 'utf8');
+    rmSync(join(ws.repo('package-pilot'), '.nextbridge', 'product.yaml'));
+
+    const r = run(ws, ['scripts/sync.mjs', '--repos', '..']);
+    assert.equal(r.code, 1, r.stdout + r.stderr);
+    assert.match(r.stderr, /package-pilot: missing/);
+    assert.equal(readFixture(ws, 'manifests/repocode.yaml'), stale, 'sync wrote a snapshot before failing');
+  } finally {
+    ws.cleanup();
+  }
+});
