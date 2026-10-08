@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { writeFileSync, rmSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { makeWorkspace, run, readFixture, patchProduct, gitInit, gitDiffStat } from './lib/fixture.mjs';
 
 const MARKER = 'now with live drift telemetry';
@@ -99,6 +100,21 @@ test('a product whose product.yaml disappears is a hard sync failure, not a sile
     const r = run(ws, ['scripts/sync.mjs', '--repos', '..', '--check']);
     assert.equal(r.code, 1, r.stdout + r.stderr);
     assert.match(r.stderr, /registry-guard: missing/);
+  } finally {
+    ws.cleanup();
+  }
+});
+
+test('sync takes the same repository options as validate', () => {
+  const ws = makeWorkspace();
+  try {
+    const flag = run(ws, ['scripts/sync.mjs', '--repos-dir', '..', '--check']);
+    assert.equal(flag.code, 0, flag.stdout + flag.stderr);
+
+    const r = spawnSync(process.execPath, ['scripts/sync.mjs', '--check'], {
+      cwd: ws.eco, encoding: 'utf8', env: { ...process.env, ECOSYSTEM_REPOS_DIR: '..' },
+    });
+    assert.equal(r.status, 0, r.stdout + r.stderr);
   } finally {
     ws.cleanup();
   }

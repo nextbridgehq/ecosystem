@@ -5,6 +5,8 @@
  *   node scripts/sync.mjs --repos ../          copy from local checkouts
  *   node scripts/sync.mjs --repos ../ --check  report drift, write nothing
  *
+ * --repos-dir and ECOSYSTEM_REPOS_DIR work as in validate.mjs.
+ *
  * Why a snapshot rather than fetching at compile time: catalog.json must be
  * reproducible from the contents of this repository alone. Compiling from live
  * network state makes the output unverifiable and ties CI to GitHub's
@@ -18,11 +20,16 @@ import { join, resolve } from 'node:path';
 import { paths, readYaml, listDir } from './lib/io.mjs';
 
 const argv = process.argv.slice(2);
-const reposArg = argv[argv.indexOf('--repos') + 1];
+const flag = (name) => {
+  const i = argv.indexOf(name);
+  return i === -1 ? null : (argv[i + 1] ?? '');
+};
+// Same repository options as validate.mjs.
+const reposArg = flag('--repos-dir') || flag('--repos') || process.env.ECOSYSTEM_REPOS_DIR || null;
 const check = argv.includes('--check');
 
-if (!argv.includes('--repos') || !reposArg) {
-  process.stderr.write('usage: node scripts/sync.mjs --repos <dir> [--check]\n');
+if (!reposArg) {
+  process.stderr.write('usage: node scripts/sync.mjs --repos-dir <dir> [--check]  (or --repos <dir>, or ECOSYSTEM_REPOS_DIR)\n');
   process.exit(1);
 }
 
