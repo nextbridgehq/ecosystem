@@ -41,13 +41,20 @@ export function listDir(p) {
 
 /**
  * Every product manifest currently synced into manifests/, keyed by filename
- * without `.yaml`. Layer 1 reports any manifest whose id differs from its key.
+ * without `.yaml`. Layer 1 reports any manifest whose id differs from its key,
+ * and any manifest that cannot be parsed (`error` set, `doc` null), so one bad
+ * file does not hide the findings for the rest.
  */
 export function loadManifests() {
   const out = {};
   for (const file of listDir(paths.manifests)) {
     if (!file.endsWith('.yaml')) continue;
-    out[file.replace(/\.yaml$/, '')] = { file, doc: readYaml(join(paths.manifests, file)) };
+    const key = file.replace(/\.yaml$/, '');
+    try {
+      out[key] = { file, doc: readYaml(join(paths.manifests, file)) };
+    } catch (error) {
+      out[key] = { file, doc: null, error: error.message.split('\n')[0] };
+    }
   }
   return out;
 }

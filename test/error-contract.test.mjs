@@ -45,6 +45,30 @@ test('a manifest whose id does not match its filename is a schema error', () => 
   } finally { ws.cleanup(); }
 });
 
+test('an unparseable manifest is reported alongside every other finding', () => {
+  const ws = makeWorkspace({ products: [] });
+  try {
+    writeFixture(ws, 'manifests/broken.yaml', 'this: is: not: valid: yaml:\n');
+    writeFixture(ws, 'manifests/misnamed.yaml', readFixture(ws, 'manifests/graphpowers.yaml'));
+    const r = run(ws, ['scripts/validate.mjs', '--json']);
+    assert.equal(r.code, 2, r.stdout + r.stderr);
+    const subjects = JSON.parse(r.stdout).errors.map((f) => f.subject);
+    assert.ok(subjects.includes('manifests/broken.yaml'), JSON.stringify(subjects));
+    assert.ok(subjects.includes('manifests/misnamed.yaml'), JSON.stringify(subjects));
+  } finally { ws.cleanup(); }
+});
+
+test('compile reports an unreadable input as a one-line usage error', () => {
+  const ws = makeWorkspace({ products: [] });
+  try {
+    writeFixture(ws, 'registry.yaml', 'this: is: not: valid: yaml:\n');
+    const r = run(ws, ['scripts/compile.mjs', '--check']);
+    assert.equal(r.code, 1, r.stdout + r.stderr);
+    assert.match(r.stderr, /^compile: /m);
+    assert.doesNotMatch(r.stderr, /\n\s+at /);
+  } finally { ws.cleanup(); }
+});
+
 test('a structurally broken manifest reports its schema error instead of crashing layer 3', () => {
   const ws = makeWorkspace({ products: ['graphpowers'] });
   try {

@@ -28,9 +28,15 @@ import { buildCatalog, buildMarketplace } from './lib/build.mjs';
 
 const check = process.argv.includes('--check');
 
-const registry = readYaml(paths.registry);
-const taxonomy = readYaml(paths.taxonomy);
-const manifests = loadManifests();
+let registry, taxonomy, manifests;
+try {
+  registry = readYaml(paths.registry);
+  taxonomy = readYaml(paths.taxonomy);
+  manifests = loadManifests();
+} catch (error) {
+  process.stderr.write(`compile: ${error.message}\n`);
+  process.exit(1);
+}
 
 /* Never compile an ecosystem that does not validate: a catalog built from a
    broken registry is worse than no catalog at all. */

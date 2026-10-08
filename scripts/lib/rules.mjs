@@ -39,7 +39,11 @@ export function layer1({ registry, taxonomy, manifests }) {
 
   check('registry.v1.schema.json', registry, 'registry.yaml');
   check('capabilities.v1.schema.json', taxonomy, 'taxonomy/capabilities.yaml');
-  for (const [id, { file, doc }] of Object.entries(manifests)) {
+  for (const [id, { file, doc, error }] of Object.entries(manifests)) {
+    if (error) {
+      out.push(finding('R-SCHEMA', ERROR, `manifests/${file}`, `cannot be parsed as YAML: ${error}`));
+      continue;
+    }
     check('product.v1.schema.json', doc, `manifests/${file}`);
     if (doc?.id !== id) {
       out.push(finding('R-SCHEMA', ERROR, `manifests/${file}`, `manifest id "${doc?.id}" does not match its filename`));
