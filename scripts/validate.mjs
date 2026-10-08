@@ -29,12 +29,15 @@ try {
   const manifests = loadManifests();
 
   findings = [...layer1({ registry, taxonomy, manifests })];
-  // Layer 2 assumes layer 1 held; running it on a structurally broken document
-  // produces noise rather than information.
-  if (!findings.some((f) => f.severity === ERROR)) {
+  // Layers 2 and 3 assume layer 1 held; running them on a structurally broken
+  // document produces noise, or a crash, rather than information.
+  const structural = findings.some((f) => f.severity === ERROR);
+  if (!structural) {
     findings.push(...layer2({ registry, taxonomy, manifests }));
   }
-  if (reposDir !== null) {
+  if (reposDir !== null && structural) {
+    findings.push({ rule: 'R-REPO', severity: SKIP, subject: 'layer 3', message: 'not run - layer 1 failed' });
+  } else if (reposDir !== null) {
     findings.push(...layer3({ registry, manifests, reposDir: resolve(reposDir) }));
   } else {
     findings.push({ rule: 'R-REPO', severity: SKIP, subject: 'layer 3', message: 'not run - pass --repos-dir <dir> or set ECOSYSTEM_REPOS_DIR to check repository consistency' });

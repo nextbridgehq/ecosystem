@@ -45,6 +45,36 @@ test('a manifest whose id does not match its filename is a schema error', () => 
   } finally { ws.cleanup(); }
 });
 
+test('a structurally broken manifest reports its schema error instead of crashing layer 3', () => {
+  const ws = makeWorkspace({ products: ['graphpowers'] });
+  try {
+    const original = readFixture(ws, 'manifests/graphpowers.yaml');
+    const broken = original.replace(/^    path: \.\n/m, '');
+    assert.notEqual(broken, original, 'fixture no longer has a plugin path line to remove');
+    writeFixture(ws, 'manifests/graphpowers.yaml', broken);
+
+    const r = run(ws, ['scripts/validate.mjs', '--repos', '..', '--json']);
+    assert.equal(r.code, 2, r.stdout + r.stderr);
+    const out = JSON.parse(r.stdout);
+    assert.ok(out.errors.some((f) => f.rule === 'R-SCHEMA'), JSON.stringify(out.errors));
+    assert.ok(
+      out.skipped.some((f) => f.rule === 'R-REPO' && f.subject === 'layer 3' && /layer 1 failed/.test(f.message)),
+      JSON.stringify(out.skipped),
+    );
+  } finally { ws.cleanup(); }
+});
+
+test('without --repos, a layer 1 failure still reports the usual layer 3 skip', () => {
+  const ws = makeWorkspace({ products: [] });
+  try {
+    writeFixture(ws, 'manifests/misnamed.yaml', readFixture(ws, 'manifests/graphpowers.yaml'));
+    const out = JSON.parse(run(ws, ['scripts/validate.mjs', '--json']).stdout);
+    const skip = out.skipped.filter((f) => f.rule === 'R-REPO' && f.subject === 'layer 3');
+    assert.equal(skip.length, 1, JSON.stringify(skip));
+    assert.match(skip[0].message, /--repos-dir/);
+  } finally { ws.cleanup(); }
+});
+
 /* ── Every finding must be actionable ─────────────────────────────────── */
 
 test('every rule that can error names a subject and says what is wrong', async () => {
