@@ -95,6 +95,21 @@ test('R-META4 catches a declared Node floor the repository does not support (rep
   assert.equal(rules(res, 'R-META4').length, 3);
 });
 
+test('R-META4 catches a Python floor that differs only in the minor version (graphpowers fixture)', () => {
+  const doc = { ...baseManifest(), id: 'graphpowers', runtime: { python: '>=3.12' } };
+  const res = layer3({ registry, manifests: withManifests([doc]), reposDir: FIXTURES_ROOT });
+  const hits = rules(res, 'R-META4').filter((f) => f.severity === ERROR);
+  assert.equal(hits.length, 1, JSON.stringify(hits));
+  assert.match(hits[0].message, /3\.12/);
+  assert.match(hits[0].message, /3\.9/);
+});
+
+test('R-META4 accepts a Python floor that matches requires-python (graphpowers fixture)', () => {
+  const doc = { ...baseManifest(), id: 'graphpowers', runtime: { python: '>=3.9' } };
+  const res = layer3({ registry, manifests: withManifests([doc]), reposDir: FIXTURES_ROOT });
+  assert.deepEqual(rules(res, 'R-META4'), []);
+});
+
 test('no synthetic product fixture ships a competing marketplace', () => {
   assert.deepEqual(rules(layer3({ registry, manifests, reposDir: FIXTURES_ROOT }), 'R-MK2'), []);
 });

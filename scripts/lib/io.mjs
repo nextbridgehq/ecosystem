@@ -102,12 +102,22 @@ export function versionFloor(range) {
   return m ? Number(m[1]) : null;
 }
 
+/**
+ * Lowest "major.minor" a Python range admits, so ">=3.10" and ">=3.12" differ
+ * and ">=3" equals ">=3.0" (rule R-META4). Unreadable input returns null.
+ */
+export function pythonFloor(range) {
+  if (typeof range !== 'string') return null;
+  const m = range.match(/(\d+)(?:\.(\d+))?/);
+  return m ? `${Number(m[1])}.${Number(m[2] ?? 0)}` : null;
+}
+
 /** Minimal `[project]` reader for pyproject.toml. Only the fields the rules need. */
 export function readPyproject(file) {
   const text = readTextIfExists(file);
   if (text === null) return null;
   const section = (name) => {
-    const re = new RegExp(`^\\[${name.replace(/[.[\]]/g, '\\$&')}\\]([\\s\\S]*?)(?=^\\[|\\Z)`, 'm');
+    const re = new RegExp(`^\\[${name.replace(/[.[\]]/g, '\\$&')}\\]([\\s\\S]*?)(?=^\\[|(?![\\s\\S]))`, 'm');
     return text.match(re)?.[1] ?? '';
   };
   const scalar = (body, key) =>

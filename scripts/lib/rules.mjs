@@ -3,7 +3,7 @@ import { existsSync } from 'node:fs';
 import Ajv from 'ajv/dist/2020.js';
 import {
   paths, readJson, readJsonIfExists, readTextIfExists, listDir, isDir,
-  collectPackageJson, normalizeRepoRef, versionFloor, readPyproject,
+  collectPackageJson, normalizeRepoRef, versionFloor, pythonFloor, readPyproject,
 } from './io.mjs';
 
 export const ERROR = 'error';
@@ -367,8 +367,8 @@ export function layer3({ registry, manifests, reposDir }) {
       }
     }
     if (manifest.runtime?.python) {
-      const declared = versionFloor(manifest.runtime.python);
-      const found = versionFloor(py?.requiresPython);
+      const declared = pythonFloor(manifest.runtime.python);
+      const found = pythonFloor(py?.requiresPython);
       if (found === null) {
         out.push(finding('R-META4', SKIP, subject, 'no requires-python declared'));
       } else if (found !== declared) {
