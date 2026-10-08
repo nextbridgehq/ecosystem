@@ -25,11 +25,9 @@ jobs:
       - name: Schema and referential validation
         run: node scripts/validate.mjs
 
-      - name: Unit tests
+      # Every test/*.test.mjs, fixture and drift suites included.
+      - name: Tests
         run: npm test
-
-      - name: Fixture and drift suite (Tier 2)
-        run: npm run test:fixtures
 
       # CI never writes to the repository. A stale generated file is a red check
       # with an obvious fix, not a surprise commit.
