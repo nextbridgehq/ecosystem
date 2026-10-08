@@ -81,6 +81,9 @@ node scripts/sync.mjs --repos ..       # refresh manifests/ from product repos
 npm test
 ```
 
+`validate` and `sync` both accept `--repos <dir>`, `--repos-dir <dir>`, or
+`ECOSYSTEM_REPOS_DIR`.
+
 Exit codes are the API: `0` clean, `1` usage or internal error, `2` validation
 errors or drift.
 
@@ -120,7 +123,7 @@ product repositories on disk.
 | R-META4 | Declared runtime floor matches `engines.node` / `requires-python` |
 | R-META5 | `maturity: stable` requires observable CI |
 | R-MK2 | No product repository ships a competing Nextbridge marketplace |
-| R-MK5 | A declared plugin manifest exists and agrees on its name |
+| R-MK5 | A declared plugin manifest exists inside the repository and agrees on its name |
 | R-MK7 | Declared component counts match the repository |
 | R-SYNC1 | The snapshot in `manifests/` matches the product repository |
 

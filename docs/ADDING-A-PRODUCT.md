@@ -141,7 +141,7 @@ manifest does.
 product whose `manifest_status` is not `present`:
 
 ```js
-if (entry.manifest_status !== 'present') continue;   // sync.mjs
+.filter(([, e]) => e.manifest_status === 'present')   // sync.mjs
 ```
 
 So syncing while the entry still says `pending` copies nothing, and flipping to
@@ -373,7 +373,7 @@ nothing to check, which is never a pass and never a failure.
 
 | Rule | What trips it | Fix |
 |---|---|---|
-| R-SCHEMA | A document fails its JSON Schema, or `manifests/<file>` has an `id` that is not its filename | Fix the document against `schema/*.schema.json`, then `node scripts/sync.mjs --repos ..` |
+| R-SCHEMA | A document fails its JSON Schema, `manifests/<file>` is not valid YAML, or `manifests/<file>` has an `id` that is not its filename | Fix the document against `schema/*.schema.json`, then `node scripts/sync.mjs --repos ..` |
 
 ### Layer 2 — referential (offline, always runs)
 
@@ -405,7 +405,7 @@ nothing to check, which is never a pass and never a failure.
 | R-META4 | `runtime.node` disagrees with every `engines.node` found, or `runtime.python` disagrees with `requires-python`. `skipped` when the repository declares neither | Align the floor in `product.yaml` with the repository, or vice versa |
 | R-META5 | `maturity: stable` with no `*.yml`/`*.yaml` in `.github/workflows/` | Install a CI workflow, or drop to `maturity: experimental` |
 | R-MK2 | A product repository contains `.claude-plugin/marketplace.json`. **Warning** while the product has no manifest, **error** once it has one | Delete the per-product marketplace. There is one Nextbridge marketplace |
-| R-MK5 | A declared plugin manifest does not exist, or its `name` disagrees with the `plugins[]` entry | Fix `manifest`/`name` in `product.yaml`, or the plugin's own manifest |
+| R-MK5 | A declared plugin manifest does not exist, points outside the repository, or its `name` disagrees with the `plugins[]` entry | Fix `manifest`/`name` in `product.yaml`, or the plugin's own manifest |
 | R-MK7 | A declared `components` count or boolean does not match the repository. `skipped` when the plugin manifest overrides component paths | Update `components` in `product.yaml` to what the repository actually ships |
 | R-SYNC1 | `manifests/<id>.yaml` differs from the product repository's `.nextbridge/product.yaml`, or that file is missing | `node scripts/sync.mjs --repos ..` |
 
