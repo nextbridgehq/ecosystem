@@ -145,14 +145,14 @@ export function layer2({ registry, taxonomy, manifests }) {
   }
 
   // R-REF8 — orphaned capabilities. A warning while products remain unmanifested.
-  const allPending = Object.values(registry.products ?? {}).some((p) => p.manifest_status === 'pending');
+  const anyPending = Object.values(registry.products ?? {}).some((p) => p.manifest_status === 'pending');
   const used = new Set(Object.values(manifests).flatMap(({ doc }) => [
     ...(doc.capabilities?.core ?? []), ...(doc.capabilities?.secondary ?? []),
   ]));
   for (const id of capabilityIds) {
     if (used.has(id)) continue;
-    out.push(finding('R-REF8', allPending ? WARN : ERROR, `capability:${id}`,
-      allPending ? 'no manifested product claims this capability yet' : 'orphaned: no product claims this capability'));
+    out.push(finding('R-REF8', anyPending ? WARN : ERROR, `capability:${id}`,
+      anyPending ?'no manifested product claims this capability yet' : 'orphaned: no product claims this capability'));
   }
 
   // R-REF9 — a product must have at least one surface: an interface or a plugin.
@@ -310,7 +310,6 @@ export function layer3({ registry, manifests, reposDir }) {
           out.push(finding('R-META2', ERROR, subject, `npm package "${name}" is declared as distribution but is marked "private": true`));
         }
       }
-      if (dist.channel === 'pypi') continue;
     }
     for (const dist of manifest.distribution ?? []) {
       if (dist.channel !== 'pypi') continue;
@@ -399,12 +398,12 @@ export function layer3({ registry, manifests, reposDir }) {
         out.push(finding('R-MK5', ERROR, subject, `plugin "${plugin.name}" declares manifest ${plugin.manifest}, which does not exist`));
         continue;
       }
-      const declaredName = readJson(pluginManifest)?.name;
+      const overrides = readJson(pluginManifest);
+      const declaredName = overrides?.name;
       if (declaredName !== plugin.name) {
         out.push(finding('R-MK5', ERROR, subject, `plugin "${plugin.name}" does not match ${plugin.manifest} name "${declaredName}"`));
       }
 
-      const overrides = readJson(pluginManifest);
       const componentOverridden = ['skills', 'agents', 'commands'].some((k) => overrides?.[k] !== undefined);
       if (componentOverridden) {
         out.push(finding('R-MK7', SKIP, subject, `plugin "${plugin.name}" overrides component paths in its manifest; count verification does not apply`));
