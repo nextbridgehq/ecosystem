@@ -36,6 +36,8 @@ All seven go to `docs/archive/<same name>`.
 
 - `README.md` lines 168–169: point to `docs/archive/PHASE-2-SPEC.md` and
   `docs/archive/PHASE-2-REPORT.md`.
+- `docs/NINE-PRODUCT-REPRESENTATION.md` line 33: link to
+  `archive/MARKETPLACE-CONSOLIDATION.md`.
 - Cross-references inside archived docs: rewrite each `docs/<NAME>.md` so it
   points at the file's actual location after the move (`docs/archive/<NAME>.md`
   for archived docs, unchanged for kept docs). Markdown links use correct

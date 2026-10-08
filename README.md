@@ -165,8 +165,8 @@ becomes arguable when there is something real to build it on.
   contract for adding or retiring a product or plugin.
 - [manifests/README.md](manifests/README.md) — why `manifests/` is generated
   and must not be edited.
-- [docs/PHASE-2-SPEC.md](docs/PHASE-2-SPEC.md) and
-  [docs/PHASE-2-REPORT.md](docs/PHASE-2-REPORT.md) — the hardening phase.
+- [docs/archive/PHASE-2-SPEC.md](docs/archive/PHASE-2-SPEC.md) and
+  [docs/archive/PHASE-2-REPORT.md](docs/archive/PHASE-2-REPORT.md) — the hardening phase.
 
 ## License
 

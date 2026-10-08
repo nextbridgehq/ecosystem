@@ -28,8 +28,8 @@ actually produced.
 - A grep for local paths/username across tracked-looking files found 4 hits
   in `.md` files. Inspected individually, only 2 are genuine local filesystem
   leaks:
-  - `docs/PHASE-2-REPORT.md:190` — `C:\Users\saadat\AppData\Local\Temp\nb-claude-FPymBK\...`, inside a quoted `verify:clean-env` error transcript.
-  - `docs/PHASE-2-SPEC.md:179` — `C:\Users\saadat\graphpowers`, a local dev-machine path.
+  - `docs/archive/PHASE-2-REPORT.md:190` — `C:\Users\saadat\AppData\Local\Temp\nb-claude-FPymBK\...`, inside a quoted `verify:clean-env` error transcript.
+  - `docs/archive/PHASE-2-SPEC.md:179` — `C:\Users\saadat\graphpowers`, a local dev-machine path.
   - The other 2 hits (`docs/NINE-PRODUCT-REPRESENTATION.md:119`,
     `docs/SCHEMA-FREEZE.md:70`) mention `saadat-dev` as a **GitHub username
     that was itself a real, already-public defect** — the wrong repository
@@ -83,7 +83,7 @@ actually produced.
 
 ## Workflow
 
-1. **Redact — `docs/PHASE-2-REPORT.md:190`:**
+1. **Redact — `docs/archive/PHASE-2-REPORT.md:190`:**
    Change
    `` `Error: Hook load failed: Duplicate hooks file detected: ./hooks/hooks.json resolves to already-loaded file C:\Users\saadat\AppData\Local\Temp\nb-claude-FPymBK\plugins\cache\nextbridge\graphpowers\0.3.1\hooks\hooks.json. ...` ``
    to the same line with the absolute path replaced by
@@ -92,7 +92,7 @@ actually produced.
    directory (`CLAUDE_CONFIG_DIR` env var), so the substitution is accurate,
    not just generic.
 
-2. **Redact — `docs/PHASE-2-SPEC.md:179`:**
+2. **Redact — `docs/archive/PHASE-2-SPEC.md:179`:**
    Change `` `C:\Users\saadat\graphpowers` `` to
    `` `<local dev machine>\graphpowers` `` — preserves the sentence's meaning
    (a separate, stale local install existed and was noted but not acted on).

@@ -43,7 +43,7 @@ These are deferred by decision, not oversight:
 - **No solutions.** `registry.solutions` stays `[]`.
 - **No marketplace UI, website, or CLI.**
 - **No changes to `product.v1`** unless a real product proves it insufficient.
-  The schema freeze in [SCHEMA-FREEZE.md](SCHEMA-FREEZE.md) holds.
+  The schema freeze in [SCHEMA-FREEZE.md](../SCHEMA-FREEZE.md) holds.
 - **No maturity model change.** O2 stays deferred. The eventual shape
   (`declared_maturity` plus a computed `ecosystem_status` with observable
   checks) is recorded here as intent only; Phase 2 does not implement it.

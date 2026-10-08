@@ -30,7 +30,7 @@ That is the point: the validation rules turn the audit's hand-found defects into
 a blocking checklist rather than a document nobody rereads.
 
 Consolidation of the two plugin repositories is complete and verified — see
-[MARKETPLACE-CONSOLIDATION.md](MARKETPLACE-CONSOLIDATION.md), including three
+[MARKETPLACE-CONSOLIDATION.md](archive/MARKETPLACE-CONSOLIDATION.md), including three
 defects the install verification found that no rule could have.
 
 ---

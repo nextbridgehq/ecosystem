@@ -19,7 +19,7 @@ branches, the LICENSE-file `WARN`, and `io.mjs` are not touched.
 
 ## Global Constraints
 
-- Spec of record: `ecosystem/docs/G1-METADATA-SCOPING-SPEC.md`. Every task
+- Spec of record: `ecosystem/docs/archive/G1-METADATA-SCOPING-SPEC.md`. Every task
   below implements exactly what it says — do not improve, generalize, or move
   filtering into `collectPackageJson`.
 - `declaredNpm` membership is **exact string equality**, no normalization.

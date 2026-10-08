@@ -107,13 +107,13 @@ by `test/sync-lifecycle.test.mjs`:
 
 Spec question 4 — *is the snapshot boundary enforced?* — is proved by R-SYNC1
 plus the recovery test `drift in the snapshot is recoverable by running sync`,
-and documented in [manifests/README.md](../manifests/README.md) and
+and documented in [manifests/README.md](../../manifests/README.md) and
 `.gitattributes`. C2 in the spec is why the boundary is documented *outside*
 the files: `sync.mjs` copies bytes, so a "do not edit" banner inside a snapshot
 would itself be drift.
 
 Spec question 5 — *is the operational contract written down?* — is
-[ADDING-A-PRODUCT.md](ADDING-A-PRODUCT.md), which was executed against a
+[ADDING-A-PRODUCT.md](../ADDING-A-PRODUCT.md), which was executed against a
 disposable fixture before it was written. Two of its statements were corrected
 because the fixture disagreed with the plan; see
 [Plan versus implementation](#the-recurring-finding-implementation-is-ground-truth-the-plan-is-a-hypothesis).
@@ -368,7 +368,7 @@ means a `pending` entry left in place indefinitely weakens the taxonomy check
 for the whole ecosystem. Nothing is pending today, so R-REF8 is an error and
 `the committed ecosystem passes layers 1 and 2 with no errors` means what it
 says. **Recommendation:** no rule change; documented in
-[ADDING-A-PRODUCT.md](ADDING-A-PRODUCT.md) so the side effect is not a surprise.
+[ADDING-A-PRODUCT.md](../ADDING-A-PRODUCT.md) so the side effect is not a surprise.
 
 ### G6 — R-MK3 has no green intermediate state when retiring a plugin
 
@@ -379,7 +379,7 @@ produce an R-MK3 error and `compile.mjs` refuses with exit 2. The plan's
 retirement order ("remove the member first, recompile, then remove the plugin")
 does not avoid this; nothing does. The real contract is that both edits are one
 change, and that is what
-[ADDING-A-PRODUCT.md](ADDING-A-PRODUCT.md#retiring-a-plugin) now says.
+[ADDING-A-PRODUCT.md](../ADDING-A-PRODUCT.md#retiring-a-plugin) now says.
 
 ### G7 — R-SCHEMA and R-REPO are not in the README's rule tables
 
@@ -392,7 +392,7 @@ structural finding) and `R-REPO` (the `skipped` marker, emitted both by
 `validate.mjs` when `--repos` is absent and by `layer3` per unavailable
 repository). Neither matches the coverage test's `R-[A-Z]+\d+` pattern, so both
 are legitimately outside that test. Both are now documented in
-[ADDING-A-PRODUCT.md](ADDING-A-PRODUCT.md#what-will-reject-you). Rewriting
+[ADDING-A-PRODUCT.md](../ADDING-A-PRODUCT.md#what-will-reject-you). Rewriting
 README's rule tables was explicitly out of scope for this task.
 
 ---
@@ -628,7 +628,7 @@ code did. The code is what it does. Three concrete cases:
             manifest_status is "present" but manifests/ has no manifest
    ```
 
-   [ADDING-A-PRODUCT.md](ADDING-A-PRODUCT.md) documents the order that works —
+   [ADDING-A-PRODUCT.md](../ADDING-A-PRODUCT.md) documents the order that works —
    set `present`, *then* sync — and explains why, quoting the line of
    `sync.mjs` responsible.
 
@@ -672,7 +672,7 @@ The discipline that produced all four: run the thing before writing it down.
 
 - **The snapshot boundary is enforced outside the snapshots (C2).** R-SYNC1
   compares bytes, so the "do not edit" notice lives in
-  [manifests/README.md](../manifests/README.md), `.gitattributes`, and this
+  [manifests/README.md](../../manifests/README.md), `.gitattributes`, and this
   document — never inside a `manifests/*.yaml`.
 
 ---
@@ -686,7 +686,7 @@ of scope*, all of which held:
 - **No solutions.** `registry.solutions` is still `[]`.
 - **No marketplace UI, website, or CLI.**
 - **No changes to `product.v1`.** The freeze in
-  [SCHEMA-FREEZE.md](SCHEMA-FREEZE.md) holds; `schema/product.v1.schema.json`
+  [SCHEMA-FREEZE.md](../SCHEMA-FREEZE.md) holds; `schema/product.v1.schema.json`
   was not touched.
 - **No maturity model change.** O2 stays deferred. The maturity section above is
   evidence, not a model.
